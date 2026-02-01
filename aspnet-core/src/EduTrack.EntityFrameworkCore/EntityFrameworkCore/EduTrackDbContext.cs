@@ -1,9 +1,9 @@
 ﻿using Abp.Zero.EntityFrameworkCore;
 using EduTrack.Authorization.Roles;
 using EduTrack.Authorization.Users;
-using EduTrack.Entities;
 using EduTrack.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
+using EduTrack.GradeLevels;
 
 namespace EduTrack.EntityFrameworkCore;
 

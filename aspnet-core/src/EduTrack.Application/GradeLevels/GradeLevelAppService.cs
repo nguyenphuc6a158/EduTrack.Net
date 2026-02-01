@@ -1,30 +1,36 @@
-﻿using EduTrack.Repositories;
-using System;
+﻿using Abp.Application.Services;
+using Abp.Domain.Repositories;
+using EduTrack.GradeLevels.Dto;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EduTrack.GradeLevels
 {
-    public class GradeLevelAppService : EduTrackAppServiceBase
+    public class GradeLevelAppService
+        : ApplicationService, IGradeLevelAppService
     {
-        private readonly IGradeLevelRepository _repository;
+        private readonly IRepository<GradeLevel, int> _gradeLevelRepository;
 
-        public GradeLevelAppService(IGradeLevelRepository repository)
+        public GradeLevelAppService(
+            IRepository<GradeLevel, int> gradeLevelRepository)
         {
-            _repository = repository;
+            _gradeLevelRepository = gradeLevelRepository;
         }
 
-        public async Task<List<GradeLevelDto>> GetListAsync()
+        public async Task<GradeLevelDto> CreateAsync(CreateGradeLevelInput input)
         {
-            var entities = await _repository.GetAllAsync();
+            var gradeLevel = new GradeLevel(input.Name);
 
-            return entities.Select(x => new GradeLevelDto
-            {
-                Id = x.Id,
-                Name = x.Name
-            }).ToList();
+            await _gradeLevelRepository.InsertAsync(gradeLevel);
+            await CurrentUnitOfWork.SaveChangesAsync();
+
+            return ObjectMapper.Map<GradeLevelDto>(gradeLevel);
+        }
+
+        public async Task<List<GradeLevelDto>> GetAllAsync()
+        {
+            var list = await _gradeLevelRepository.GetAllListAsync();
+            return ObjectMapper.Map<List<GradeLevelDto>>(list);
         }
     }
 }

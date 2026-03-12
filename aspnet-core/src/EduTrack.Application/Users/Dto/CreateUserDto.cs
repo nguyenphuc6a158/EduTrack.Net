@@ -3,6 +3,7 @@ using Abp.Authorization.Users;
 using Abp.AutoMapper;
 using Abp.Runtime.Validation;
 using EduTrack.Authorization.Users;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace EduTrack.Users.Dto;
@@ -35,6 +36,10 @@ public class CreateUserDto : IShouldNormalize
     [StringLength(AbpUserBase.MaxPlainPasswordLength)]
     [DisableAuditing]
     public string Password { get; set; }
+
+    public DateTime DateOfBirth { get; set; }
+
+    public string PhoneNumber { get; set; }
 
     public void Normalize()
     {

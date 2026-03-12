@@ -8,6 +8,8 @@ namespace EduTrack.Authorization.Users;
 public class User : AbpUser<User>
 {
     public const string DefaultPassword = "123qwe";
+    public virtual DateTime DateOfBirth { get; set; }
+    public virtual string PhoneNumber { get; set; }
 
     public static string CreateRandomPassword()
     {

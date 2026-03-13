@@ -11,5 +11,7 @@ namespace EduTrack.Classes.Dtos
         public string ClassName { get; set; }
 
         public int Level { get; set; }
+
+        public long TeacherID { get; set; }
     }
 }

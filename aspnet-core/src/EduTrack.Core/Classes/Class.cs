@@ -10,7 +10,7 @@ namespace EduTrack.Classes
     public class Class : AuditedEntity<long>
     {
         public virtual string ClassName { get; set; }
-
         public virtual int Level { get; set; }
+        public virtual long TeacherID { get; set; }
     }
 }

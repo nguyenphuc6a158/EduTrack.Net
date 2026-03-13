@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Classes
 {
-    internal class ClassAppService : AsyncCrudAppService<Class, ClassDto, long, PagedClassResultRequestDto, CreateClassDto, ClassDto>, IClassAppService
+    public class ClassAppService : AsyncCrudAppService<Class, ClassDto, long, PagedClassResultRequestDto, CreateClassDto, ClassDto>, IClassAppService
     {
         public ClassAppService(IRepository<Class, long> repository) : base(repository)
         {

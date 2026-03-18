@@ -12,6 +12,7 @@ using EduTrack.Roles.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -129,7 +130,17 @@ public class RoleAppService : AsyncCrudAppService<Role, RoleDto, int, PagedRoleR
     {
         identityResult.CheckErrors(LocalizationManager);
     }
-
+    public async Task<GrantedPermissionsDto> IsGranted(int id) 
+    {
+        var role = await _roleManager.GetRoleByIdAsync(id);
+        var permissions = PermissionManager.GetAllPermissions();
+        var grantedPermissions = (await _roleManager.GetGrantedPermissionsAsync(role)).Select(p => p.Name).ToHashSet();
+        var result = new GrantedPermissionsDto
+        {
+            grantedPermissionNames = permissions.ToDictionary(p => p.Name, p => grantedPermissions.Contains(p.Name))
+        };
+        return result;
+    }
     public async Task<GetRoleForEditOutput> GetRoleForEdit(EntityDto input)
     {
         var permissions = PermissionManager.GetAllPermissions();

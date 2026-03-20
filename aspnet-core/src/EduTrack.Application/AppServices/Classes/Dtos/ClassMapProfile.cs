@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using EduTrack.Classes;
-using EduTrack.Classes.Dtos;
+using EduTrack.Entity.Classes;
 
-namespace EduTrack.Students;
+namespace EduTrack.AppServices.Classes.Dtos;
 
 public class ClassMapProfile : Profile
 {

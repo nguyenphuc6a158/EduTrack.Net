@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduTrack.Classes.Dtos
+namespace EduTrack.AppServices.Classes.Dtos
 {
     public class ClassDto : EntityDto<long>
     {
         public string ClassName { get; set; }
 
-        public int Level { get; set; }
-        public long TeacherID { get; set; }
+        public long GradeId { get; set; }
+        public long TeacherId { get; set; }
     }
 }

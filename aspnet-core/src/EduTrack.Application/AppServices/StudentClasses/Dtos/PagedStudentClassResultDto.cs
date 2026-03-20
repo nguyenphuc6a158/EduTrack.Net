@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduTrack.Classes
+namespace EduTrack.AppServices.StudentClasses.Dtos
 {
-    public class PagedClassResultRequestDto : PagedResultRequestDto
+    public class PagedStudentClassResultDto : PagedResultRequestDto
     {
         public string Keyword { get; set; }
     }

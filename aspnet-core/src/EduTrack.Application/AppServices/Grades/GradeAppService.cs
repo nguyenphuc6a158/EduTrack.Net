@@ -52,7 +52,7 @@ using EduTrack.AppServices.Grades.Dtos;
 using EduTrack.Entity.Grades;
 using System.Diagnostics;
 public class GradeAppService
-    : AsyncCrudAppService<Grade, GradeDto, long, PagedGradeResultRestDto, CreateGradeDto, UpdateGradeDto>,
+    : AsyncCrudAppService<Grade, GradeDto, long, PagedGradeResultRequestDto, CreateGradeDto, UpdateGradeDto>,
       IGradeAppService
 {
     public GradeAppService(IRepository<Grade, long> repository)

@@ -1585,6 +1585,39 @@ namespace EduTrack.Migrations
                     b.ToTable("AbpUsers");
                 });
 
+            modelBuilder.Entity("EduTrack.Entities.Chapters.Chapter", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ChapterName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SubjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("Chapters");
+                });
+
             modelBuilder.Entity("EduTrack.Entities.StudenClasses.StudentClass", b =>
                 {
                     b.Property<long>("Id")
@@ -1592,6 +1625,9 @@ namespace EduTrack.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("AbpUsesId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("ClassId")
                         .HasColumnType("bigint");
@@ -1608,13 +1644,96 @@ namespace EduTrack.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("StudentId")
-                        .IsRequired()
+                    b.Property<long>("StudentId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AbpUsesId");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("StudentClasses");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.StudentProgresses.StudentProgress", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("AbpUsesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<float>("AvgScore")
+                        .HasColumnType("real");
+
+                    b.Property<long>("ChapterId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StudentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("TotalAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalCorrect")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalQuestions")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AbpUsesId");
+
+                    b.HasIndex("ChapterId");
+
+                    b.ToTable("StudentProgresss");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.Subjects.Subject", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SubjectName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("StudentClasses");
+                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("EduTrack.Entity.Classes.Class", b =>
@@ -1624,6 +1743,9 @@ namespace EduTrack.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("AbpUsesId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ClassName")
                         .IsRequired()
@@ -1648,6 +1770,10 @@ namespace EduTrack.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AbpUsesId");
+
+                    b.HasIndex("GradeId");
 
                     b.ToTable("Classes");
                 });
@@ -1963,6 +2089,76 @@ namespace EduTrack.Migrations
                     b.Navigation("LastModifierUser");
                 });
 
+            modelBuilder.Entity("EduTrack.Entities.Chapters.Chapter", b =>
+                {
+                    b.HasOne("EduTrack.Entities.Subjects.Subject", "Subjects")
+                        .WithMany("Chapters")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subjects");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.StudenClasses.StudentClass", b =>
+                {
+                    b.HasOne("EduTrack.Authorization.Users.User", "AbpUses")
+                        .WithMany()
+                        .HasForeignKey("AbpUsesId");
+
+                    b.HasOne("EduTrack.Entity.Classes.Class", "Classes")
+                        .WithMany("StudentClasses")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EduTrack.Authorization.Users.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AbpUses");
+
+                    b.Navigation("Classes");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.StudentProgresses.StudentProgress", b =>
+                {
+                    b.HasOne("EduTrack.Authorization.Users.User", "AbpUses")
+                        .WithMany()
+                        .HasForeignKey("AbpUsesId");
+
+                    b.HasOne("EduTrack.Entities.Chapters.Chapter", "Chapters")
+                        .WithMany("StudentProgresses")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AbpUses");
+
+                    b.Navigation("Chapters");
+                });
+
+            modelBuilder.Entity("EduTrack.Entity.Classes.Class", b =>
+                {
+                    b.HasOne("EduTrack.Authorization.Users.User", "AbpUses")
+                        .WithMany()
+                        .HasForeignKey("AbpUsesId");
+
+                    b.HasOne("EduTrack.Entity.Grades.Grade", "Grades")
+                        .WithMany("Classses")
+                        .HasForeignKey("GradeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AbpUses");
+
+                    b.Navigation("Grades");
+                });
+
             modelBuilder.Entity("EduTrack.MultiTenancy.Tenant", b =>
                 {
                     b.HasOne("EduTrack.Authorization.Users.User", "CreatorUser")
@@ -2059,6 +2255,26 @@ namespace EduTrack.Migrations
                     b.Navigation("Settings");
 
                     b.Navigation("Tokens");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.Chapters.Chapter", b =>
+                {
+                    b.Navigation("StudentProgresses");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.Subjects.Subject", b =>
+                {
+                    b.Navigation("Chapters");
+                });
+
+            modelBuilder.Entity("EduTrack.Entity.Classes.Class", b =>
+                {
+                    b.Navigation("StudentClasses");
+                });
+
+            modelBuilder.Entity("EduTrack.Entity.Grades.Grade", b =>
+                {
+                    b.Navigation("Classses");
                 });
 #pragma warning restore 612, 618
         }

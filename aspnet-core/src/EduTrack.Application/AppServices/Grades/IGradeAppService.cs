@@ -5,7 +5,7 @@ public interface IGradeAppService
     : IAsyncCrudAppService<
         GradeDto,
         long,
-        PagedGradeResultRestDto,
+        PagedGradeResultRequestDto,
         CreateGradeDto,
         UpdateGradeDto>
 {

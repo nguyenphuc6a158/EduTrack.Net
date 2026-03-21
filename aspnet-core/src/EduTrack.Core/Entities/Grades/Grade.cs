@@ -1,4 +1,5 @@
 ﻿using Abp.Domain.Entities.Auditing;
+using EduTrack.Entity.Classes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,5 +13,7 @@ namespace EduTrack.Entity.Grades
     {
         [Required]
         public virtual string GradeName { get; set; }
+
+        public virtual ICollection<Class> Classses { get; set; }
     }
 }

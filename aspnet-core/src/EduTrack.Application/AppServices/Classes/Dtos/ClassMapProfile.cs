@@ -3,9 +3,9 @@ using EduTrack.Entity.Classes;
 
 namespace EduTrack.AppServices.Classes.Dtos;
 
-public class ClassMapProfile : Profile
+public class StudentClassMapProfile : Profile
 {
-    public ClassMapProfile()
+    public StudentClassMapProfile()
     {
         CreateMap<Class, ClassDto>();
         CreateMap<CreateClassDto, Class>();

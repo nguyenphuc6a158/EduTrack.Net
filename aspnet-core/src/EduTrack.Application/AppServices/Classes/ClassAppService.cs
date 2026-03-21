@@ -31,7 +31,7 @@ namespace EduTrack.AppServices.Classes
                 throw new UserFriendlyException("User không tồn tại");
             }
 
-            if (!await _userManager.IsInRoleAsync(user, "Teacher"))
+            if (!await _userManager.IsInRoleAsync(user, "Teacher") && !await _userManager.IsInRoleAsync(user, "Admin"))
             {
                 throw new UserFriendlyException("User không phải là Teacher");
             }

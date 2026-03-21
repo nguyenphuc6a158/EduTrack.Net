@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.AppServices.StudentClasses
 {
-    public interface IStudentClassAppService : IAsyncCrudAppService<StudentClassDto, long, PagedStudentClassResultDto, CreateStudentClassDto, UpdateStudentClassDto>
+    public interface IStudentClassAppService : IAsyncCrudAppService<StudentClassDto, long, PagedStudentClassResultRequestDto, CreateStudentClassDto, UpdateStudentClassDto>
     {
 
     }

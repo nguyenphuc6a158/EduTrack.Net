@@ -1,6 +1,7 @@
 ﻿using Abp.Domain.Entities.Auditing;
 using EduTrack.Entities.AssignmentQuestions;
 using EduTrack.Entities.Chapters;
+using EduTrack.Entities.ClassAssignments;
 using EduTrack.Entities.Questions;
 using EduTrack.Entities.StudentProgresses;
 using EduTrack.Entities.Subjects;
@@ -16,7 +17,8 @@ namespace EduTrack.Entities.Assignments
     {
         public virtual string Title { get; set; }
         public virtual long ChapterId { get; set; }
-        public virtual Chapter Chapters { get; set; }
+        public virtual Chapter Chapter { get; set; }
         public virtual ICollection<AssignmentQuestion> AssignmentQuestions { get; set; }
+        public virtual ICollection<ClassAssignment> ClassAssignments { get; set; }
     }
 }

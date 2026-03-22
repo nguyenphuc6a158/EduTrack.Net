@@ -24,7 +24,7 @@ namespace EduTrack.Entities.Questions
         public virtual long ChapterId { get; set; }
         [Required]
         public virtual int DifficultyLevel { get; set; }
-        public virtual Chapter Chapters { get; set; }
+        public virtual Chapter Chapter { get; set; }
         public virtual ICollection<QuestionOption> QuestionOptions { get; set; }
         public virtual ICollection<AssignmentQuestion> AssignmentQuestions { get; set; }
     }

@@ -12,7 +12,7 @@ namespace EduTrack.AppServices.AssignmentQuestions.Dtos
 {
     public class AssignmentQuestionMapProfile : Profile
     {
-        AssignmentQuestionMapProfile()
+        public AssignmentQuestionMapProfile()
         {
             CreateMap<AssignmentQuestion, AssignmentQuestionDto>();
             CreateMap<CreateAssignmentQuestionDto, AssignmentQuestion>();

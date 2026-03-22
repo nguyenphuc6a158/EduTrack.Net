@@ -14,8 +14,8 @@ namespace EduTrack.Entities.AssignmentQuestions
         public virtual long AssignmentId { get; set; }
         public virtual long QuestionId { get; set; }
         public virtual int OrderIndex { get; set; }
-        public virtual Assignment Assignments { get; set; }
-        public virtual Question Questions { get; set; }
+        public virtual Assignment Assignment { get; set; }
+        public virtual Question Question { get; set; }
 
     }
 }

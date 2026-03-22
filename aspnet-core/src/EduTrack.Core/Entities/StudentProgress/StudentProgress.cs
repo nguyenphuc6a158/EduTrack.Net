@@ -15,10 +15,10 @@ namespace EduTrack.Entities.StudentProgresses
     {
         [Required]
         public virtual long StudentId { get; set; }
-        public virtual User AbpUses { get; set; }
+        public virtual User AbpUse { get; set; }
         [Required]
         public virtual long ChapterId { get; set; }
-        public virtual Chapter Chapters { get; set; }
+        public virtual Chapter Chapter { get; set; }
         public virtual float AvgScore { get; set; }
         public virtual int TotalAttempts { get; set; }
         public virtual int TotalCorrect { get; set; }

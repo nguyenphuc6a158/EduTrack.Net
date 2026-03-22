@@ -18,8 +18,8 @@ namespace EduTrack.Entities.StudenClasses
         public virtual User Student { get; set; }
         [Required]
         public virtual long ClassId { get; set; }
-        public virtual Class Classes { get; set; }
-        public virtual User AbpUses { get; set; }
+        public virtual Class Class { get; set; }
+        public virtual User AbpUse { get; set; }
 
     }
 }

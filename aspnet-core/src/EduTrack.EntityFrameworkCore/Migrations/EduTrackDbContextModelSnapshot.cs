@@ -1694,6 +1694,41 @@ namespace EduTrack.Migrations
                     b.ToTable("Chapters");
                 });
 
+            modelBuilder.Entity("EduTrack.Entities.ClassAssignments.ClassAssignment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AssignmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ClassId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId");
+
+                    b.HasIndex("ClassId");
+
+                    b.ToTable("ClassAssignments");
+                });
+
             modelBuilder.Entity("EduTrack.Entities.QuestionOptions.QuestionOption", b =>
                 {
                     b.Property<long>("Id")
@@ -1780,7 +1815,7 @@ namespace EduTrack.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AbpUsesId")
+                    b.Property<long?>("AbpUseId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("ClassId")
@@ -1803,7 +1838,7 @@ namespace EduTrack.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AbpUsesId");
+                    b.HasIndex("AbpUseId");
 
                     b.HasIndex("ClassId");
 
@@ -1820,7 +1855,7 @@ namespace EduTrack.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AbpUsesId")
+                    b.Property<long?>("AbpUseId")
                         .HasColumnType("bigint");
 
                     b.Property<float>("AvgScore")
@@ -1855,11 +1890,11 @@ namespace EduTrack.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AbpUsesId");
+                    b.HasIndex("AbpUseId");
 
                     b.HasIndex("ChapterId");
 
-                    b.ToTable("StudentProgresss");
+                    b.ToTable("StudentProgresses");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.Subjects.Subject", b =>
@@ -1898,7 +1933,7 @@ namespace EduTrack.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AbpUsesId")
+                    b.Property<long?>("AbpUseId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("ClassName")
@@ -1925,7 +1960,7 @@ namespace EduTrack.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AbpUsesId");
+                    b.HasIndex("AbpUseId");
 
                     b.HasIndex("GradeId");
 
@@ -2245,13 +2280,13 @@ namespace EduTrack.Migrations
 
             modelBuilder.Entity("EduTrack.Entities.AssignmentQuestions.AssignmentQuestion", b =>
                 {
-                    b.HasOne("EduTrack.Entities.Assignments.Assignment", "Assignments")
+                    b.HasOne("EduTrack.Entities.Assignments.Assignment", "Assignment")
                         .WithMany("AssignmentQuestions")
                         .HasForeignKey("AssignmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EduTrack.Entities.Questions.Question", "Questions")
+                    b.HasOne("EduTrack.Entities.Questions.Question", "Question")
                         .WithMany()
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2261,62 +2296,81 @@ namespace EduTrack.Migrations
                         .WithMany("AssignmentQuestions")
                         .HasForeignKey("QuestionId1");
 
-                    b.Navigation("Assignments");
+                    b.Navigation("Assignment");
 
-                    b.Navigation("Questions");
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.Assignments.Assignment", b =>
                 {
-                    b.HasOne("EduTrack.Entities.Chapters.Chapter", "Chapters")
+                    b.HasOne("EduTrack.Entities.Chapters.Chapter", "Chapter")
                         .WithMany("Assignments")
                         .HasForeignKey("ChapterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Chapters");
+                    b.Navigation("Chapter");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.Chapters.Chapter", b =>
                 {
-                    b.HasOne("EduTrack.Entities.Subjects.Subject", "Subjects")
+                    b.HasOne("EduTrack.Entities.Subjects.Subject", "Subject")
                         .WithMany("Chapters")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Subjects");
+                    b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.ClassAssignments.ClassAssignment", b =>
+                {
+                    b.HasOne("EduTrack.Entities.Assignments.Assignment", "Assignment")
+                        .WithMany("ClassAssignments")
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EduTrack.Entity.Classes.Class", "Class")
+                        .WithMany("ClassAssignments")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
+
+                    b.Navigation("Class");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.QuestionOptions.QuestionOption", b =>
                 {
-                    b.HasOne("EduTrack.Entities.Questions.Question", "Questions")
+                    b.HasOne("EduTrack.Entities.Questions.Question", "Question")
                         .WithMany("QuestionOptions")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Questions");
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.Questions.Question", b =>
                 {
-                    b.HasOne("EduTrack.Entities.Chapters.Chapter", "Chapters")
+                    b.HasOne("EduTrack.Entities.Chapters.Chapter", "Chapter")
                         .WithMany("Questions")
                         .HasForeignKey("ChapterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Chapters");
+                    b.Navigation("Chapter");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.StudenClasses.StudentClass", b =>
                 {
-                    b.HasOne("EduTrack.Authorization.Users.User", "AbpUses")
+                    b.HasOne("EduTrack.Authorization.Users.User", "AbpUse")
                         .WithMany()
-                        .HasForeignKey("AbpUsesId");
+                        .HasForeignKey("AbpUseId");
 
-                    b.HasOne("EduTrack.Entity.Classes.Class", "Classes")
+                    b.HasOne("EduTrack.Entity.Classes.Class", "Class")
                         .WithMany("StudentClasses")
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2328,45 +2382,45 @@ namespace EduTrack.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AbpUses");
+                    b.Navigation("AbpUse");
 
-                    b.Navigation("Classes");
+                    b.Navigation("Class");
 
                     b.Navigation("Student");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.StudentProgresses.StudentProgress", b =>
                 {
-                    b.HasOne("EduTrack.Authorization.Users.User", "AbpUses")
+                    b.HasOne("EduTrack.Authorization.Users.User", "AbpUse")
                         .WithMany()
-                        .HasForeignKey("AbpUsesId");
+                        .HasForeignKey("AbpUseId");
 
-                    b.HasOne("EduTrack.Entities.Chapters.Chapter", "Chapters")
+                    b.HasOne("EduTrack.Entities.Chapters.Chapter", "Chapter")
                         .WithMany("StudentProgresses")
                         .HasForeignKey("ChapterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AbpUses");
+                    b.Navigation("AbpUse");
 
-                    b.Navigation("Chapters");
+                    b.Navigation("Chapter");
                 });
 
             modelBuilder.Entity("EduTrack.Entity.Classes.Class", b =>
                 {
-                    b.HasOne("EduTrack.Authorization.Users.User", "AbpUses")
+                    b.HasOne("EduTrack.Authorization.Users.User", "AbpUse")
                         .WithMany()
-                        .HasForeignKey("AbpUsesId");
+                        .HasForeignKey("AbpUseId");
 
-                    b.HasOne("EduTrack.Entity.Grades.Grade", "Grades")
-                        .WithMany("Classses")
+                    b.HasOne("EduTrack.Entity.Grades.Grade", "Grade")
+                        .WithMany("Classes")
                         .HasForeignKey("GradeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AbpUses");
+                    b.Navigation("AbpUse");
 
-                    b.Navigation("Grades");
+                    b.Navigation("Grade");
                 });
 
             modelBuilder.Entity("EduTrack.MultiTenancy.Tenant", b =>
@@ -2470,6 +2524,8 @@ namespace EduTrack.Migrations
             modelBuilder.Entity("EduTrack.Entities.Assignments.Assignment", b =>
                 {
                     b.Navigation("AssignmentQuestions");
+
+                    b.Navigation("ClassAssignments");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.Chapters.Chapter", b =>
@@ -2495,12 +2551,14 @@ namespace EduTrack.Migrations
 
             modelBuilder.Entity("EduTrack.Entity.Classes.Class", b =>
                 {
+                    b.Navigation("ClassAssignments");
+
                     b.Navigation("StudentClasses");
                 });
 
             modelBuilder.Entity("EduTrack.Entity.Grades.Grade", b =>
                 {
-                    b.Navigation("Classses");
+                    b.Navigation("Classes");
                 });
 #pragma warning restore 612, 618
         }

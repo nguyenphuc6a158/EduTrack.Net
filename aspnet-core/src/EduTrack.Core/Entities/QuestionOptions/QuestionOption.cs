@@ -18,6 +18,6 @@ namespace EduTrack.Entities.QuestionOptions
         public virtual long QuestionId { get; set; }
         [Required]
         public virtual bool IsCorrect { get; set; }
-        public virtual Question Questions { get; set; }
+        public virtual Question Question { get; set; }
     }
 }

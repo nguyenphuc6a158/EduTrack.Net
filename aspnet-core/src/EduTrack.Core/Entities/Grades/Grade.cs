@@ -14,6 +14,6 @@ namespace EduTrack.Entity.Grades
         [Required]
         public virtual string GradeName { get; set; }
 
-        public virtual ICollection<Class> Classses { get; set; }
+        public virtual ICollection<Class> Classes { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Abp.Domain.Entities.Auditing;
 using EduTrack.Authorization.Users;
+using EduTrack.Entities.ClassAssignments;
 using EduTrack.Entities.StudenClasses;
 using EduTrack.Entities.Subjects;
 using EduTrack.Entity.Grades;
@@ -20,8 +21,9 @@ namespace EduTrack.Entity.Classes
         public virtual long GradeId { get; set; }
         [Required]
         public virtual long TeacherId { get; set; }
-        public virtual Grade Grades { get; set; }
-        public virtual User AbpUses { get; set; }
+        public virtual Grade Grade { get; set; }
+        public virtual User AbpUse { get; set; }
         public virtual ICollection<StudentClass> StudentClasses { get; set; }
+        public virtual ICollection<ClassAssignment> ClassAssignments { get; set; }
     }
 }

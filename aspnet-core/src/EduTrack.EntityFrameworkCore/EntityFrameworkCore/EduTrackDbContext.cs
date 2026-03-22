@@ -4,6 +4,7 @@ using EduTrack.Authorization.Users;
 using EduTrack.Entities.AssignmentQuestions;
 using EduTrack.Entities.Assignments;
 using EduTrack.Entities.Chapters;
+using EduTrack.Entities.ClassAssignments;
 using EduTrack.Entities.QuestionOptions;
 using EduTrack.Entities.Questions;
 using EduTrack.Entities.StudenClasses;
@@ -24,10 +25,11 @@ public class EduTrackDbContext : AbpZeroDbContext<Tenant, Role, User, EduTrackDb
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Chapter> Chapters { get; set; }
     public DbSet<Question> Questions { get; set; }
-    public DbSet<StudentProgress> StudentProgresss { get; set; }
+    public DbSet<StudentProgress> StudentProgresses { get; set; }
     public DbSet<QuestionOption> QuestionOptions { get; set; }
     public DbSet<Assignment> Assignments { get; set; }
     public DbSet<AssignmentQuestion> AssignmentQuestions { get; set; }
+    public DbSet<ClassAssignment> ClassAssignments { get; set; }
 
     public EduTrackDbContext(DbContextOptions<EduTrackDbContext> options)
         : base(options)
@@ -39,15 +41,27 @@ public class EduTrackDbContext : AbpZeroDbContext<Tenant, Role, User, EduTrackDb
 
         modelBuilder.Entity<AssignmentQuestion>(entity =>
         {
-            entity.HasOne(aq => aq.Assignments)
+            entity.HasOne(aq => aq.Assignment)
                 .WithMany(a => a.AssignmentQuestions)
                 .HasForeignKey(aq => aq.AssignmentId)
                 .OnDelete(DeleteBehavior.Cascade); // giữ cascade
 
-            entity.HasOne(aq => aq.Questions)
+            entity.HasOne(aq => aq.Question)
                 .WithMany()
                 .HasForeignKey(aq => aq.QuestionId)
-                .OnDelete(DeleteBehavior.Restrict); // 🔥 fix lỗi ở đây
+                .OnDelete(DeleteBehavior.Restrict);// 🔥 fix lỗi ở đây
+        });
+        modelBuilder.Entity<ClassAssignment>(entity =>
+        {
+            entity.HasOne(ca => ca.Assignment)
+                .WithMany(a => a.ClassAssignments)
+                .HasForeignKey(ca => ca.AssignmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ca => ca.Class)
+                .WithMany(c => c.ClassAssignments)
+                .HasForeignKey(ca => ca.ClassId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

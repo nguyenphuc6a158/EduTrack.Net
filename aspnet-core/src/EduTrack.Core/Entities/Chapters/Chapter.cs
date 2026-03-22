@@ -14,7 +14,7 @@ namespace EduTrack.Entities.Chapters
     {
         public virtual string ChapterName { get; set; }
         public virtual long SubjectId { get; set; }
-        public virtual Subject Subjects { get; set; }
+        public virtual Subject Subject { get; set; }
         public virtual ICollection<StudentProgress> StudentProgresses { get; set; }
         public virtual ICollection<Assignment> Assignments { get; set; }
         public virtual ICollection<Question> Questions { get; set; }

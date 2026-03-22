@@ -1585,6 +1585,82 @@ namespace EduTrack.Migrations
                     b.ToTable("AbpUsers");
                 });
 
+            modelBuilder.Entity("EduTrack.Entities.AssignmentQuestions.AssignmentQuestion", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AssignmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("OrderIndex")
+                        .HasColumnType("int");
+
+                    b.Property<long>("QuestionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("QuestionId1")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("QuestionId1");
+
+                    b.ToTable("AssignmentQuestions");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.Assignments.Assignment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ChapterId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChapterId");
+
+                    b.ToTable("Assignments");
+                });
+
             modelBuilder.Entity("EduTrack.Entities.Chapters.Chapter", b =>
                 {
                     b.Property<long>("Id")
@@ -1616,6 +1692,84 @@ namespace EduTrack.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("Chapters");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.QuestionOptions.QuestionOption", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("QuestionId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("QuestionOptions");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.Questions.Question", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ChapterId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("DifficultyLevel")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Explanation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChapterId");
+
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.StudenClasses.StudentClass", b =>
@@ -2089,6 +2243,40 @@ namespace EduTrack.Migrations
                     b.Navigation("LastModifierUser");
                 });
 
+            modelBuilder.Entity("EduTrack.Entities.AssignmentQuestions.AssignmentQuestion", b =>
+                {
+                    b.HasOne("EduTrack.Entities.Assignments.Assignment", "Assignments")
+                        .WithMany("AssignmentQuestions")
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EduTrack.Entities.Questions.Question", "Questions")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduTrack.Entities.Questions.Question", null)
+                        .WithMany("AssignmentQuestions")
+                        .HasForeignKey("QuestionId1");
+
+                    b.Navigation("Assignments");
+
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.Assignments.Assignment", b =>
+                {
+                    b.HasOne("EduTrack.Entities.Chapters.Chapter", "Chapters")
+                        .WithMany("Assignments")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chapters");
+                });
+
             modelBuilder.Entity("EduTrack.Entities.Chapters.Chapter", b =>
                 {
                     b.HasOne("EduTrack.Entities.Subjects.Subject", "Subjects")
@@ -2098,6 +2286,28 @@ namespace EduTrack.Migrations
                         .IsRequired();
 
                     b.Navigation("Subjects");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.QuestionOptions.QuestionOption", b =>
+                {
+                    b.HasOne("EduTrack.Entities.Questions.Question", "Questions")
+                        .WithMany("QuestionOptions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.Questions.Question", b =>
+                {
+                    b.HasOne("EduTrack.Entities.Chapters.Chapter", "Chapters")
+                        .WithMany("Questions")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chapters");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.StudenClasses.StudentClass", b =>
@@ -2257,9 +2467,25 @@ namespace EduTrack.Migrations
                     b.Navigation("Tokens");
                 });
 
+            modelBuilder.Entity("EduTrack.Entities.Assignments.Assignment", b =>
+                {
+                    b.Navigation("AssignmentQuestions");
+                });
+
             modelBuilder.Entity("EduTrack.Entities.Chapters.Chapter", b =>
                 {
+                    b.Navigation("Assignments");
+
+                    b.Navigation("Questions");
+
                     b.Navigation("StudentProgresses");
+                });
+
+            modelBuilder.Entity("EduTrack.Entities.Questions.Question", b =>
+                {
+                    b.Navigation("AssignmentQuestions");
+
+                    b.Navigation("QuestionOptions");
                 });
 
             modelBuilder.Entity("EduTrack.Entities.Subjects.Subject", b =>

@@ -8,6 +8,8 @@ using EduTrack.Entities.ClassAssignments;
 using EduTrack.Entities.QuestionOptions;
 using EduTrack.Entities.Questions;
 using EduTrack.Entities.StudenClasses;
+using EduTrack.Entities.StudentAnswers;
+using EduTrack.Entities.StudentAssignments;
 using EduTrack.Entities.StudentProgresses;
 using EduTrack.Entities.Subjects;
 using EduTrack.Entity.Classes;
@@ -30,6 +32,8 @@ public class EduTrackDbContext : AbpZeroDbContext<Tenant, Role, User, EduTrackDb
     public DbSet<Assignment> Assignments { get; set; }
     public DbSet<AssignmentQuestion> AssignmentQuestions { get; set; }
     public DbSet<ClassAssignment> ClassAssignments { get; set; }
+    public DbSet<StudentAssignment> StudentAssignments { get; set; }
+    public DbSet<StudentAnswer> StudentAnswers { get; set; }
 
     public EduTrackDbContext(DbContextOptions<EduTrackDbContext> options)
         : base(options)
@@ -61,6 +65,35 @@ public class EduTrackDbContext : AbpZeroDbContext<Tenant, Role, User, EduTrackDb
             entity.HasOne(ca => ca.Class)
                 .WithMany(c => c.ClassAssignments)
                 .HasForeignKey(ca => ca.ClassId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+        modelBuilder.Entity<StudentAssignment>(entity =>
+        {
+            entity.HasOne(ca => ca.Assignment)
+                .WithMany(a => a.StudentAssignments)
+                .HasForeignKey(ca => ca.AssignmentId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(ca => ca.AbpUser)
+                .WithMany()
+                .HasForeignKey(ca => ca.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<StudentAnswer>(entity =>
+        {
+            entity.HasOne(ca => ca.StudentAssignment)
+                .WithMany(a => a.StudentAnswers)
+                .HasForeignKey(ca => ca.StudentAssignmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ca => ca.Question)
+                .WithMany(a => a.StudentAnswers)
+                .HasForeignKey(ca => ca.QuestionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(ca => ca.QuestionOption)
+                .WithMany(a => a.StudentAnswers)
+                .HasForeignKey(ca => ca.SelectedOptionId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

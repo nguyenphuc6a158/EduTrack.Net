@@ -3,6 +3,7 @@ using EduTrack.Entities.AssignmentQuestions;
 using EduTrack.Entities.Chapters;
 using EduTrack.Entities.QuestionOptions;
 using EduTrack.Entities.StudenClasses;
+using EduTrack.Entities.StudentAnswers;
 using EduTrack.Entity.Classes;
 using EduTrack.Entity.Grades;
 using System;
@@ -26,6 +27,7 @@ namespace EduTrack.Entities.Questions
         public virtual int DifficultyLevel { get; set; }
         public virtual Chapter Chapter { get; set; }
         public virtual ICollection<QuestionOption> QuestionOptions { get; set; }
+        public virtual ICollection<StudentAnswer> StudentAnswers { get; set; }
         public virtual ICollection<AssignmentQuestion> AssignmentQuestions { get; set; }
     }
 }

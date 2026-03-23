@@ -3,6 +3,7 @@ using EduTrack.Entities.AssignmentQuestions;
 using EduTrack.Entities.Chapters;
 using EduTrack.Entities.ClassAssignments;
 using EduTrack.Entities.Questions;
+using EduTrack.Entities.StudentAssignments;
 using EduTrack.Entities.StudentProgresses;
 using EduTrack.Entities.Subjects;
 using System;
@@ -20,5 +21,6 @@ namespace EduTrack.Entities.Assignments
         public virtual Chapter Chapter { get; set; }
         public virtual ICollection<AssignmentQuestion> AssignmentQuestions { get; set; }
         public virtual ICollection<ClassAssignment> ClassAssignments { get; set; }
+        public virtual ICollection<StudentAssignment> StudentAssignments { get; set; }
     }
 }

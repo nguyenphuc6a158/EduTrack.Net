@@ -1,6 +1,7 @@
 ﻿using Abp.Domain.Entities.Auditing;
 using EduTrack.Entities.Chapters;
 using EduTrack.Entities.Questions;
+using EduTrack.Entities.StudentAnswers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,5 +20,6 @@ namespace EduTrack.Entities.QuestionOptions
         [Required]
         public virtual bool IsCorrect { get; set; }
         public virtual Question Question { get; set; }
+        public virtual ICollection<StudentAnswer> StudentAnswers { get; set; }
     }
 }

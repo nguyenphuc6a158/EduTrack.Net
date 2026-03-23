@@ -1,17 +1,20 @@
 ﻿using Abp.Application.Services;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.UI;
 using EduTrack.AppServices.Classes.Dtos;
+using EduTrack.Authorization;
+using EduTrack.Authorization.Users;
 using EduTrack.Entity.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EduTrack.Authorization.Users;
 using System.Threading.Tasks;
 
 namespace EduTrack.AppServices.Classes
 {
+    [AbpAuthorize]
     public class ClassAppService : AsyncCrudAppService<Class, ClassDto, long, PagedClassResultRequestDto, CreateClassDto, UpdateClassDto>, IClassAppService
     {
         private readonly UserManager _userManager;
@@ -21,6 +24,12 @@ namespace EduTrack.AppServices.Classes
         ) : base(repository)
         {
             _userManager = userManager;
+            GetPermissionName = PermissionNames.Pages_Classes;
+            GetAllPermissionName = PermissionNames.Pages_Classes;
+
+            CreatePermissionName = PermissionNames.Pages_Classes_Create;
+            UpdatePermissionName = PermissionNames.Pages_Classes_Update;
+            DeletePermissionName = PermissionNames.Pages_Classes_Delete;
         }
         public override async Task<ClassDto> CreateAsync(CreateClassDto input)
         {

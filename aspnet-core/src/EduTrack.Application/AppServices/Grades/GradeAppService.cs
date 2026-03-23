@@ -47,10 +47,14 @@
 //    }
 //}
 using Abp.Application.Services;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using EduTrack.AppServices.Grades.Dtos;
+using EduTrack.Authorization;
 using EduTrack.Entity.Grades;
 using System.Diagnostics;
+
+[AbpAuthorize]
 public class GradeAppService
     : AsyncCrudAppService<Grade, GradeDto, long, PagedGradeResultRequestDto, CreateGradeDto, UpdateGradeDto>,
       IGradeAppService
@@ -58,5 +62,11 @@ public class GradeAppService
     public GradeAppService(IRepository<Grade, long> repository)
         : base(repository)
     {
+        GetPermissionName = PermissionNames.Pages_Grades;
+        GetAllPermissionName = PermissionNames.Pages_Grades;
+
+        CreatePermissionName = PermissionNames.Pages_Grades_Create;
+        UpdatePermissionName = PermissionNames.Pages_Grades_Update;
+        DeletePermissionName = PermissionNames.Pages_Grades_Delete;
     }
 }

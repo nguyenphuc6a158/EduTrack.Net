@@ -63,9 +63,9 @@ namespace EduTrack.AppServices.Classes
 
             return await base.UpdateAsync(input);
         }
-        protected override IQueryable<Class> CreateFilteredQuery(PagedClassResultRequestDto input)
-        {
-            return Repository.GetAll();
-        }
+        //protected override IQueryable<Class> CreateFilteredQuery(PagedClassResultRequestDto input)
+        //{
+        //    return Repository.GetAll();
+        //}
     }
 }

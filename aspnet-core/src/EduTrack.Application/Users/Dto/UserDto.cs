@@ -22,9 +22,6 @@ public class UserDto : EntityDto<long>
     [StringLength(AbpUserBase.MaxSurnameLength)]
     public string Surname { get; set; }
 
-    [Required]
-    [EmailAddress]
-    [StringLength(AbpUserBase.MaxEmailAddressLength)]
 
     public DateTime DateOfBirth { get; set; }
 

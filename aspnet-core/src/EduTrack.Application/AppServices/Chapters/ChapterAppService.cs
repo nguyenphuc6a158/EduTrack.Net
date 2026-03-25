@@ -6,9 +6,11 @@ using EduTrack.AppServices.Grades.Dtos;
 using EduTrack.Authorization;
 using EduTrack.Entities.Chapters;
 using EduTrack.Entity.Grades;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +30,12 @@ namespace EduTrack.AppServices.Chapters
             CreatePermissionName = PermissionNames.Pages_Chapters_Create;
             UpdatePermissionName = PermissionNames.Pages_Chapters_Update;
             DeletePermissionName = PermissionNames.Pages_Chapters_Delete;
+        }
+        public async Task<List<ChapterDto>> GetChapterBySubjectAsync(long subjectId)
+        {
+            var chapters = await Repository.GetAll().Where(x => x.SubjectId == subjectId).ToListAsync();
+
+            return ObjectMapper.Map<List<ChapterDto>>(chapters);
         }
     }
 }

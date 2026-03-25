@@ -245,5 +245,31 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
 
         return true;
     }
+    //Query trực tiếp
+    //public async Task<List<UserDto>> GetAllTeacherAsync()
+    //{
+    //    var query = from user in _userRepository.GetAll()
+    //                join userRole in _userRoleRepository.GetAll()
+    //                    on user.Id equals userRole.UserId
+    //                join role in _roleRepository.GetAll()
+    //                    on userRole.RoleId equals role.Id
+    //                where role.Name == "Teacher"
+    //                select user;
+
+    //    var users = await AsyncExecuter.ToListAsync(query);
+
+    //    return ObjectMapper.Map<List<UserDto>>(users);
+    //}
+    public async Task<List<UserDto>> GetAllTeacherAsync()
+    {
+        var teacherRole = await _roleManager.FindByNameAsync("Teacher");
+        if (teacherRole == null)
+        {
+            throw new UserFriendlyException("Chưa có vai trò Teacher");
+        }
+        var users = await _userManager.GetUsersInRoleAsync("Teacher");
+
+        return ObjectMapper.Map<List<UserDto>>(users);
+    }
 }
 

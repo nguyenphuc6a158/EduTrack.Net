@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EduTrack.AppServices.StudentClasses.Dtos;
 using EduTrack.Entities.StudenClasses;
+using EduTrack.Entities.Subjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace EduTrack.AppServices.Subjects.Dto
     {
         public SubjectMapProfile()
         {
-            CreateMap<StudentClass, SubjectDto>();
-            CreateMap<CreateSubjectDto, StudentClass>();
-            CreateMap<UpdateSubjectDto, StudentClass>();
+            CreateMap<Subject, SubjectDto>();
+            CreateMap<CreateSubjectDto, Subject>();
+            CreateMap<UpdateSubjectDto, Subject>();
         }
     }
 }

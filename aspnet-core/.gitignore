@@ -255,3 +255,4 @@ src/EduTrack.Web.Mvc/secrets.json
 src/EduTrack.Web.Host/secrets.json
 src/EduTrack.Migrator/secrets.json
 src/EduTrack.Web.Host/appsettings.json
+src/EduTrack.Web.Host/App_Data/Logs/Logs.txt

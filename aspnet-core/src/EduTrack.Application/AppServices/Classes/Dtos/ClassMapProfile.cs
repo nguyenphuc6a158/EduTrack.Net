@@ -9,5 +9,6 @@ public class StudentClassMapProfile : Profile
     {
         CreateMap<Class, ClassDto>();
         CreateMap<CreateClassDto, Class>();
+        CreateMap<UpdateClassDto, Class>();
     }
 }

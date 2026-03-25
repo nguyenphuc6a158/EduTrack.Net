@@ -15,6 +15,7 @@ namespace EduTrack.AppServices.Subjects.Dto
         {
             CreateMap<StudentClass, SubjectDto>();
             CreateMap<CreateSubjectDto, StudentClass>();
+            CreateMap<UpdateSubjectDto, StudentClass>();
         }
     }
 }

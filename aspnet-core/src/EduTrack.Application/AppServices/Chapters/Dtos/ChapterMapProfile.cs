@@ -16,6 +16,7 @@ namespace EduTrack.AppServices.Chapters.Dtos
         {
             CreateMap<Chapter, ChapterDto>();
             CreateMap<CreateChapterDto, Chapter>();
+            CreateMap<UpdateChapterDto, Chapter>();
         }
     }
 }

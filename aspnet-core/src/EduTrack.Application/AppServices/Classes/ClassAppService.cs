@@ -1,4 +1,5 @@
 ﻿using Abp.Application.Services;
+using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.UI;
@@ -6,6 +7,8 @@ using EduTrack.AppServices.Classes.Dtos;
 using EduTrack.Authorization;
 using EduTrack.Authorization.Users;
 using EduTrack.Entity.Classes;
+using EduTrack.Entity.Grades;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +21,15 @@ namespace EduTrack.AppServices.Classes
     public class ClassAppService : AsyncCrudAppService<Class, ClassDto, long, PagedClassResultRequestDto, CreateClassDto, UpdateClassDto>, IClassAppService
     {
         private readonly UserManager _userManager;
+        private readonly IRepository<Grade, long> _gradeRepository;
         public ClassAppService(
             IRepository<Class, long> repository,
-            UserManager userManager
+            UserManager userManager,
+            IRepository<Grade, long> gradeRepository
         ) : base(repository)
         {
             _userManager = userManager;
+            _gradeRepository = gradeRepository;
             GetPermissionName = PermissionNames.Pages_Classes;
             GetAllPermissionName = PermissionNames.Pages_Classes;
 
@@ -56,16 +62,49 @@ namespace EduTrack.AppServices.Classes
                 throw new UserFriendlyException("User không tồn tại");
             }
 
-            if (!await _userManager.IsInRoleAsync(user, "Teacher"))
+            if (!await _userManager.IsInRoleAsync(user, "Teacher") && !await _userManager.IsInRoleAsync(user, "Admin"))
             {
                 throw new UserFriendlyException("User không phải là Teacher");
             }
 
             return await base.UpdateAsync(input);
         }
-        //protected override IQueryable<Class> CreateFilteredQuery(PagedClassResultRequestDto input)
-        //{
-        //    return Repository.GetAll();
-        //}
-    }
+        public override async Task<PagedResultDto<ClassDto>> GetAllAsync(PagedClassResultRequestDto input)
+        {
+            var query = Repository.GetAll();
+            
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+            
+            var classes = await AsyncQueryableExecuter.ToListAsync(
+                ApplyPaging(query, input)
+            );
+
+            var teacherIds = classes.Select(x => x.TeacherId).Distinct().ToList();
+            var gradeIds = classes.Select(x => x.GradeId).Distinct().ToList();
+
+            var users = await _userManager.Users.Where(u => teacherIds.Contains(u.Id)).ToListAsync();// Lấy danh sách user (teacher)
+            var grades = await _gradeRepository.GetAll().Where(g => gradeIds.Contains(g.Id)).ToListAsync();// Lấy danh sách grade
+
+            var result = classes.Select(c =>
+            {
+                var user = users.FirstOrDefault(u => u.Id == c.TeacherId);
+                var grade = grades.FirstOrDefault(g => g.Id == c.GradeId);
+
+                return new ClassDto
+                {
+                    Id = c.Id,
+                    ClassName = c.ClassName,
+                    TeacherId = c.TeacherId,
+                    GradeId = c.GradeId,
+                    TeacherName = user?.FullName,
+                    GradeName = grade?.GradeName
+                };
+            }).ToList();
+            return new PagedResultDto<ClassDto>(totalCount, result);
+        }
+            //protected override IQueryable<Class> CreateFilteredQuery(PagedClassResultRequestDto input)
+            //{
+            //    return Repository.GetAll();
+            //}
+        }
 }

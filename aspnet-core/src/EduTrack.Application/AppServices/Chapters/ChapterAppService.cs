@@ -1,4 +1,5 @@
 ﻿using Abp.Application.Services;
+using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using EduTrack.AppServices.Chapters.Dtos;
@@ -31,11 +32,13 @@ namespace EduTrack.AppServices.Chapters
             UpdatePermissionName = PermissionNames.Pages_Chapters_Update;
             DeletePermissionName = PermissionNames.Pages_Chapters_Delete;
         }
-        public async Task<List<ChapterDto>> GetChapterBySubjectAsync(long subjectId)
+        public async Task<ListResultDto<ChapterDto>> GetChapterBySubjectAsync(long subjectId)
         {
             var chapters = await Repository.GetAll().Where(x => x.SubjectId == subjectId).ToListAsync();
 
-            return ObjectMapper.Map<List<ChapterDto>>(chapters);
+            return new ListResultDto<ChapterDto>(
+                ObjectMapper.Map<List<ChapterDto>>(chapters)
+            );
         }
     }
 }

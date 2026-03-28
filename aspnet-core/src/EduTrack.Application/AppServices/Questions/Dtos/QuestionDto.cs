@@ -13,6 +13,7 @@ namespace EduTrack.AppServices.Questions.Dtos
         public string Content { get; set; }
         public string Explanation { get; set; }
         public long ChapterId { get; set; }
+        public string ChapterName { get; set; }
         public int DifficultyLevel { get; set; }
     }
 }

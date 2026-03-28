@@ -260,7 +260,7 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
 
     //    return ObjectMapper.Map<List<UserDto>>(users);
     //}
-    public async Task<List<UserDto>> GetAllTeacherAsync()
+    public async Task<ListResultDto<UserDto>> GetAllTeacherAsync()
     {
         var teacherRole = await _roleManager.FindByNameAsync("Teacher");
         if (teacherRole == null)
@@ -269,7 +269,7 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
         }
         var users = await _userManager.GetUsersInRoleAsync("Teacher");
 
-        return ObjectMapper.Map<List<UserDto>>(users);
+        return new ListResultDto<UserDto>(ObjectMapper.Map<List<UserDto>>(users));
     }
 }
 

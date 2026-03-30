@@ -271,5 +271,16 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
 
         return new ListResultDto<UserDto>(ObjectMapper.Map<List<UserDto>>(users));
     }
+    public async Task<ListResultDto<UserDto>> GetAllStudentAsync()
+    {
+        var teacherRole = await _roleManager.FindByNameAsync("Student");
+        if (teacherRole == null)
+        {
+            throw new UserFriendlyException("Chưa có vai trò Student");
+        }
+        var users = await _userManager.GetUsersInRoleAsync("Student");
+
+        return new ListResultDto<UserDto>(ObjectMapper.Map<List<UserDto>>(users));
+    }
 }
 

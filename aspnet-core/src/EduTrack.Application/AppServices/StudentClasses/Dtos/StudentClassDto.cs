@@ -10,6 +10,8 @@ namespace EduTrack.AppServices.StudentClasses.Dtos
     public class StudentClassDto : EntityDto<long>
     {
         public long ClassId { get; set; }
+        public string ClassName { get; set; }
         public long StudentId { get; set; }
+        public string StudentName { get; set; }
     }
 }

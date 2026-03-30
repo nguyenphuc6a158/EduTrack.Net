@@ -14,6 +14,7 @@ namespace EduTrack.AppServices.Grades.Dtos
         {
             CreateMap<Grade, GradeDto>();
             CreateMap<CreateGradeDto, Grade>();
+            CreateMap<UpdateGradeDto, Grade>();
         }
     }
 }

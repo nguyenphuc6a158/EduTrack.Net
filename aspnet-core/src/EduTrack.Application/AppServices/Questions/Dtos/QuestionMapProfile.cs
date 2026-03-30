@@ -16,6 +16,7 @@ namespace EduTrack.AppServices.Questions.Dtos
         {
             CreateMap<Question, QuestionDto>();
             CreateMap<CreateQuestionDto, Question>();
+            CreateMap<UpdateQuestionDto, Question>();
         }
     }
 }

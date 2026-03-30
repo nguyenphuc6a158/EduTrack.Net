@@ -17,6 +17,7 @@ namespace EduTrack.AppServices.ClassAssignments.Dtos
         {
             CreateMap<Assignment, AssignmentDto>();
             CreateMap<CreateAssignmentDto, Assignment>();
+            CreateMap<UpdateAssignmentDto, Assignment>();
         }
     }
 }

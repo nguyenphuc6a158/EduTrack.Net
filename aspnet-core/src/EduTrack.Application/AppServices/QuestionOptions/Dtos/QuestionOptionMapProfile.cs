@@ -16,6 +16,7 @@ namespace EduTrack.AppServices.QuestionOptions.Dtos
         {
             CreateMap<QuestionOption, QuestionOptionDto>();
             CreateMap<CreateQuestionOptionDto, QuestionOption>();
+            CreateMap<UpdateQuestionOptionDto, QuestionOption>();
         }
     }
 }

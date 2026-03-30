@@ -13,5 +13,7 @@ namespace EduTrack.AppServices.Classes.Dtos
 
         public long GradeId { get; set; }
         public long TeacherId { get; set; }
+        public string TeacherName { get; set; }
+        public string GradeName { get; set; }
     }
 }

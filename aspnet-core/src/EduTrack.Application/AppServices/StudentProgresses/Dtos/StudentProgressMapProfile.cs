@@ -16,6 +16,7 @@ namespace EduTrack.AppServices.StudentProsesses.Dtos
         {
             CreateMap<StudentProgress, StudentProgressDto>();
             CreateMap<CreateStudentProgressDto, StudentProgress>();
+            CreateMap<UpdateStudentProgressDto, StudentProgress>();
         }
     }
 }

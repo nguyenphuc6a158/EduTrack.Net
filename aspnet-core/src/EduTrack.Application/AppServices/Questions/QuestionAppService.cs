@@ -58,6 +58,30 @@ namespace EduTrack.AppServices.Questions
 
                 return new QuestionDto
                 {
+                    Id = q.Id,
+                    Content = q.Content,
+                    Explanation = q.Explanation,
+                    ChapterId = q.ChapterId,
+                    ChapterName = chapter.ChapterName,
+                    DifficultyLevel = q.DifficultyLevel
+                };
+            }).ToList();
+            return new PagedResultDto<QuestionDto>(totalCount, result);
+        }
+        public async Task<PagedResultDto<QuestionDto>> GetQuestionByChapterAsync(long chapterId)
+        {
+            var query = Repository.GetAll().Where(q => q.ChapterId == chapterId);
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+            var questions = await AsyncQueryableExecuter.ToListAsync(query);
+            var chapterIds = questions.Select(x => x.ChapterId).Distinct().ToList();
+            var chapters = await _chapterRepository.GetAll().Where(c => chapterIds.Contains(c.Id)).ToListAsync();
+            var result = questions.Select(q =>
+            {
+                var chapter = chapters.FirstOrDefault(c => c.Id == q.ChapterId);
+
+                return new QuestionDto
+                {
+                    Id = q.Id,
                     Content = q.Content,
                     Explanation = q.Explanation,
                     ChapterId = q.ChapterId,

@@ -2,6 +2,7 @@
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
+using Abp.UI;
 using Castle.MicroKernel.Registration;
 using EduTrack.AppServices.Classes.Dtos;
 using EduTrack.AppServices.StudentClasses.Dtos;
@@ -88,6 +89,17 @@ namespace EduTrack.AppServices.StudentClasses
                 };
             }).ToList();
             return new PagedResultDto<StudentClassDto>(totalCount, result);
+        }
+        public override async Task<StudentClassDto> CreateAsync(CreateStudentClassDto input)
+        {
+            var studentClasses = Repository.GetAll().Where(s => s.ClassId == input.ClassId);
+            var exists = await studentClasses.AnyAsync(s => s.StudentId == input.StudentId);
+            if (exists)
+            {
+                throw new UserFriendlyException("Đã có học sinh trong lớp học");
+            }
+
+            return await base.CreateAsync(input);
         }
     }
 }

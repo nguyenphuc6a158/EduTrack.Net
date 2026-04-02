@@ -8,6 +8,7 @@ namespace EduTrack.AppServices.QuestionOptions.Dtos
 {
     public class CreateQuestionOptionDto
     {
+        public long? Id { get; set; }
         public string Content { get; set; }
         public long QuestionId { get; set; }
         public bool IsCorrect { get; set; }

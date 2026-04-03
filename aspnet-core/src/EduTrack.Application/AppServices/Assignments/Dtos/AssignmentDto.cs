@@ -12,6 +12,8 @@ namespace EduTrack.AppServices.Assignments.Dtos
     {
         public string Title { get; set; }
         public long ChapterId { get; set; }
+        public string ChapterName { get; set; }
+        public string CreateBy { get; set; }
         public Chapter Chapters { get; set; }
     }
 }

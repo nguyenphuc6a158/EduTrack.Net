@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,6 +40,12 @@ namespace EduTrack.AppServices.Classes
         }
         public override async Task<ClassDto> CreateAsync(CreateClassDto input)
         {
+            bool exist = await Repository.GetAll().AnyAsync(c => c.GradeId == input.GradeId && c.ClassName == input.ClassName);
+            if (exist)
+            {
+                throw new UserFriendlyException("Khối này đã có lớp tên " + input.ClassName);
+            }
+
             var user = await _userManager.GetUserByIdAsync(input.TeacherId);
 
             if (user == null)

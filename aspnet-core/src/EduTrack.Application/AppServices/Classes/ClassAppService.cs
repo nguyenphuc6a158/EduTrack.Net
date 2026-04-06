@@ -111,6 +111,40 @@ namespace EduTrack.AppServices.Classes
 
             return new PagedResultDto<ClassDto>(totalCount, result);
         }
+        public async Task<PagedResultDto<ClassDto>> GetClassByTeacherAsync(long teacherId)
+        {
+            // Lấy tất cả class có gradeId
+            var query = Repository.GetAll().Where(c => c.TeacherId == teacherId);
+
+            // Tổng số
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+
+            // Lấy danh sách
+            var classes = await AsyncQueryableExecuter.ToListAsync(query);
+
+            var gradeIds = classes.Select(x => x.GradeId).Distinct().ToList();
+
+            var grades = await _gradeRepository.GetAll().Where(g => gradeIds.Contains(g.Id)).ToListAsync();
+
+            var teacher = await _userManager.GetUserByIdAsync(teacherId);
+
+            var result = classes.Select( c =>
+            {
+                var grade = grades.FirstOrDefault(g => g.Id == c.GradeId);
+
+                return new ClassDto
+                {
+                    Id = c.Id,
+                    ClassName = c.ClassName,
+                    TeacherId = c.TeacherId,
+                    GradeId = c.GradeId,
+                    TeacherName = teacher?.FullName,
+                    GradeName = grade?.GradeName
+                };
+            }).ToList();
+
+            return new PagedResultDto<ClassDto>(totalCount, result);
+        }
         public override async Task<PagedResultDto<ClassDto>> GetAllAsync(PagedClassResultRequestDto input)
         {
             var query = Repository.GetAll();

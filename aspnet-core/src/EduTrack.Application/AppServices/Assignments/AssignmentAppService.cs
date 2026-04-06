@@ -2,16 +2,12 @@
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
-using Castle.MicroKernel.Registration;
 using EduTrack.AppServices.Assignments.Dtos;
-using EduTrack.AppServices.Classes.Dtos;
 using EduTrack.Authorization;
 using EduTrack.Authorization.Users;
 using EduTrack.Entities.AssignmentQuestions;
 using EduTrack.Entities.Assignments;
 using EduTrack.Entities.Chapters;
-using EduTrack.Entity.Classes;
-using EduTrack.Entity.Grades;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -87,6 +83,7 @@ namespace EduTrack.AppServices.Assignments
                 {
                     Id = a.Id,
                     ChapterId = a.ChapterId,
+                    Title = a.Title,
                     ChapterName = chapter.ChapterName,
                     CreateBy = user.FullName
                 };

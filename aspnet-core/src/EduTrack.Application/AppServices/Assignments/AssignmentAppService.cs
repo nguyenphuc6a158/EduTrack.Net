@@ -40,7 +40,7 @@ namespace EduTrack.AppServices.Assignments
             UpdatePermissionName = PermissionNames.Pages_Assignments_Update;
             DeletePermissionName = PermissionNames.Pages_Assignments_Delete;
         }
-        public async Task CreateWithQuestionsAsync(CreateWithQuestionsDto input)
+        public async Task CreateAssignmentWithQuestionsAsync(CreateWithQuestionsDto input)
         {
             var assignment = ObjectMapper.Map<Assignment>(input);
 

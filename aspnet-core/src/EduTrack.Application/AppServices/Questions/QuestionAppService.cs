@@ -9,6 +9,7 @@ using EduTrack.AppServices.Grades.Dtos;
 using EduTrack.AppServices.Questions.Dtos;
 using EduTrack.Authorization;
 using EduTrack.Authorization.Users;
+using EduTrack.Entities.AssignmentQuestions;
 using EduTrack.Entities.Chapters;
 using EduTrack.Entities.QuestionOptions;
 using EduTrack.Entities.Questions;
@@ -31,15 +32,18 @@ namespace EduTrack.AppServices.Questions
         private readonly IRepository<Chapter, long> _chapterRepository;
         private readonly IRepository<Question, long> _repository;
         private readonly IRepository<QuestionOption, long> _questionOptionRepository;
+        private readonly IRepository<AssignmentQuestion, long> _assignmentQuestionRepository;
         public QuestionAppService(
             IRepository<Question, long> repository,
             IRepository<Chapter, long> chapterRepository,
-            IRepository<QuestionOption, long> questionOptionRepository
+            IRepository<QuestionOption, long> questionOptionRepository,
+            IRepository<AssignmentQuestion, long> assignmentQuestionRepository
             ) : base(repository)
         {
             _chapterRepository = chapterRepository;
             _repository = repository;
             _questionOptionRepository = questionOptionRepository;
+            _assignmentQuestionRepository = assignmentQuestionRepository;
             GetPermissionName = PermissionNames.Pages_Questions;
             GetAllPermissionName = PermissionNames.Pages_Questions;
 
@@ -75,6 +79,28 @@ namespace EduTrack.AppServices.Questions
         public async Task<PagedResultDto<QuestionDto>> GetQuestionByChapterAsync(long chapterId)
         {
             var query = Repository.GetAll().Where(q => q.ChapterId == chapterId);
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+            var questions = await AsyncQueryableExecuter.ToListAsync(query);
+            var chapterIds = questions.Select(x => x.ChapterId).Distinct().ToList();
+            var chapters = await _chapterRepository.GetAll().Where(c => chapterIds.Contains(c.Id)).ToListAsync();
+            var result = questions.Select(q =>
+            {
+                var chapter = chapters.FirstOrDefault(c => c.Id == q.ChapterId);
+
+                return new QuestionDto
+                {
+                    Id = q.Id,
+                    FileUrl = q.FileUrl,
+                    ChapterId = q.ChapterId,
+                    ChapterName = chapter.ChapterName,
+                    DifficultyLevel = q.DifficultyLevel
+                };
+            }).ToList();
+            return new PagedResultDto<QuestionDto>(totalCount, result);
+        }
+        public async Task<PagedResultDto<QuestionDto>> GetQuestionByAssignmentAsync(long assignmentId)
+        {
+            var query = Repository.GetAll().Where(q => q.ChapterId == assignmentId);
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
             var questions = await AsyncQueryableExecuter.ToListAsync(query);
             var chapterIds = questions.Select(x => x.ChapterId).Distinct().ToList();

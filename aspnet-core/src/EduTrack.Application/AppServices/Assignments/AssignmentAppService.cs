@@ -1,6 +1,7 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
 using EduTrack.AppServices.Assignments.Dtos;
 using EduTrack.Authorization;
@@ -40,7 +41,7 @@ namespace EduTrack.AppServices.Assignments
             UpdatePermissionName = PermissionNames.Pages_Assignments_Update;
             DeletePermissionName = PermissionNames.Pages_Assignments_Delete;
         }
-        public async Task CreateAssignmentWithQuestionsAsync(CreateWithQuestionsDto input)
+        public async Task CreateAssignmentWithQuestionsAsync(CreateAssignmentWithQuestionsDto input)
         {
             var assignment = ObjectMapper.Map<Assignment>(input);
 
@@ -56,10 +57,39 @@ namespace EduTrack.AppServices.Assignments
 
             foreach (var item in assignmentQuestions)
             {
-                _assignmentQuestionRepository.InsertAsync(item);
+               await _assignmentQuestionRepository.InsertAsync(item);
             }
 
             await CurrentUnitOfWork.SaveChangesAsync();
+        }
+        public async Task UpdateAssignmentWithQuestionsAsync(UpdateAssignmentWithQuestionsDto input)
+        {
+            var assignment = await Repository.GetAsync(input.Id);
+
+            assignment.ChapterId = input.chapterId;
+            assignment.Title = input.title;
+            await Repository.UpdateAsync(assignment);
+            await CurrentUnitOfWork.SaveChangesAsync();
+
+            await _assignmentQuestionRepository.DeleteAsync(aq => aq.AssignmentId == assignment.Id);
+            var assignmentQuestions = input.assignmentQuestions.Select(q => new AssignmentQuestion
+            {
+                QuestionId = q.QuestionId,
+                AssignmentId = assignment.Id,
+                OrderIndex = q.OrderIndex,
+            }).ToList();
+
+            foreach (var item in assignmentQuestions)
+            {
+                await _assignmentQuestionRepository.InsertAsync(item);
+            }
+
+            await CurrentUnitOfWork.SaveChangesAsync();
+        }
+        public override async Task DeleteAsync(long assignmentId)
+        {
+            await Repository.DeleteAsync(assignmentId);
+            await _assignmentQuestionRepository.DeleteAsync(aq => aq.AssignmentId == assignmentId);
         }
         public override async Task<PagedResultDto<AssignmentDto>> GetAllAsync(PagedAssignmentResultRequestDto input)
         {

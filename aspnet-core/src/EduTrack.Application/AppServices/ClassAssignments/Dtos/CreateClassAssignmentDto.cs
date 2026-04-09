@@ -10,5 +10,6 @@ namespace EduTrack.AppServices.ClassAssignments.Dtos
     {
         public long AssignmentId { get; set; }
         public long ClassId { get; set; }
+        public DateTime PublicTime { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using EduTrack.AppServices.Assignments.Dtos;
 using EduTrack.AppServices.Chapters.Dtos;
 using EduTrack.Entities.Assignments;
 using EduTrack.Entities.Chapters;
+using EduTrack.Entities.ClassAssignments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,9 @@ namespace EduTrack.AppServices.ClassAssignments.Dtos
     {
         public ClassAssignmentMapProfile()
         {
-            CreateMap<Assignment, AssignmentDto>();
-            CreateMap<CreateAssignmentDto, Assignment>();
-            CreateMap<UpdateAssignmentDto, Assignment>();
+            CreateMap<ClassAssignment, ClassAssignmentDto>();
+            CreateMap<CreateClassAssignmentDto, ClassAssignment>();
+            CreateMap<UpdateClassAssignmentDto, ClassAssignment>();
         }
     }
 }

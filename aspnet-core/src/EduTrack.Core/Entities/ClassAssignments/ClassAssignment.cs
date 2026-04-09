@@ -13,6 +13,7 @@ namespace EduTrack.Entities.ClassAssignments
     {
         public virtual long AssignmentId {  get; set; }
         public virtual long ClassId { get; set; }
+        public virtual DateTime PublicTime { get; set; }
         public virtual Class Class { get; set; }
         public virtual Assignment Assignment { get; set; }
     }

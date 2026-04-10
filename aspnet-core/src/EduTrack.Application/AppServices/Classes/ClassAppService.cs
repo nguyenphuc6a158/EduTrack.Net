@@ -8,8 +8,6 @@ using EduTrack.Authorization;
 using EduTrack.Authorization.Users;
 using EduTrack.Entity.Classes;
 using EduTrack.Entity.Grades;
-using EduTrack.Users.Dto;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,17 +22,14 @@ namespace EduTrack.AppServices.Classes
     public class ClassAppService : AsyncCrudAppService<Class, ClassDto, long, PagedClassResultRequestDto, CreateClassDto, UpdateClassDto>, IClassAppService
     {
         private readonly UserManager _userManager;
-        private readonly RoleManager<IdentityRole<long>> _roleManager;
         private readonly IRepository<Grade, long> _gradeRepository;
         public ClassAppService(
             IRepository<Class, long> repository,
             UserManager userManager,
-            IRepository<Grade, long> gradeRepository,
-            RoleManager<IdentityRole<long>> roleManager
+            IRepository<Grade, long> gradeRepository
         ) : base(repository)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
             _gradeRepository = gradeRepository;
             GetPermissionName = PermissionNames.Pages_Classes;
             GetAllPermissionName = PermissionNames.Pages_Classes;
@@ -183,31 +178,9 @@ namespace EduTrack.AppServices.Classes
             }).ToList();
             return new PagedResultDto<ClassDto>(totalCount, result);
         }
-        //protected override IQueryable<Class> CreateFilteredQuery(PagedClassResultRequestDto input)
-        //{
-        //    return Repository.GetAll();
-        //}
-        public async Task<ListResultDto<UserDto>> GetAllTeacherAsync()
-        {
-            var teacherRole = await _roleManager.FindByNameAsync("Teacher");
-            if (teacherRole == null)
-            {
-                throw new UserFriendlyException("Chưa có vai trò Teacher");
-            }
-            var users = await _userManager.GetUsersInRoleAsync("Teacher");
-
-            return new ListResultDto<UserDto>(ObjectMapper.Map<List<UserDto>>(users));
+            //protected override IQueryable<Class> CreateFilteredQuery(PagedClassResultRequestDto input)
+            //{
+            //    return Repository.GetAll();
+            //}
         }
-        public async Task<ListResultDto<UserDto>> GetAllStudentAsync()
-        {
-            var teacherRole = await _roleManager.FindByNameAsync("Student");
-            if (teacherRole == null)
-            {
-                throw new UserFriendlyException("Chưa có vai trò Student");
-            }
-            var users = await _userManager.GetUsersInRoleAsync("Student");
-
-            return new ListResultDto<UserDto>(ObjectMapper.Map<List<UserDto>>(users));
-        }
-    }
 }

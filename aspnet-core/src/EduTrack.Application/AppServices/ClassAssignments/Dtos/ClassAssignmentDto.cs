@@ -11,7 +11,10 @@ namespace EduTrack.AppServices.ClassAssignments.Dtos
     public class ClassAssignmentDto : EntityDto<long>
     {
         public long AssignmentId { get; set; }
+        public string AssignmentName { get; set; }
         public long ClassId { get; set; }
+        public string ClassName { get; set; }
         public DateTime PublicTime { get; set; }
+        public long CreaterUserId { get; set; }
     }
 }

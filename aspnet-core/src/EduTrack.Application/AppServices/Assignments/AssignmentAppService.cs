@@ -4,6 +4,7 @@ using Abp.Authorization;
 using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
 using Abp.Timing;
+using Abp.UI;
 using EduTrack.AppServices.Assignments.Dtos;
 using EduTrack.AppServices.ClassAssignments.Dtos;
 using EduTrack.Authorization;
@@ -14,6 +15,7 @@ using EduTrack.Entities.Chapters;
 using EduTrack.Entities.ClassAssignments;
 using EduTrack.Entities.StudenClasses;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -134,9 +136,13 @@ namespace EduTrack.AppServices.Assignments
             }).ToList();
             return new PagedResultDto<AssignmentDto>(totalCount, result);
         }
-        public async Task<PagedResultDto<AssignmentDto>> GetAllAssignmentForStudentAsync(PagedAssignmentResultRequestDto input, long userId)
+        public async Task<PagedResultDto<AssignmentDto>> GetAllAssignmentForStudentAsync(long userId, long chapterId, PagedAssignmentResultRequestDto input)
         {
-            var studentClass = await _studentClassRepository.FirstOrDefaultAsync(x => x.StudentId == userId);
+            var studentClass = await _studentClassRepository.FirstOrDefaultAsync(x => x.StudentId == userId && x.ClassId == chapterId);
+            if (studentClass == null)
+            {
+                throw new UserFriendlyException("Sinh viên không thuộc lớp này");
+            }
             var classId = studentClass.ClassId;
             var classAssignments = await _classAssignmentRepository.GetAll().Where(ca => ca.ClassId == classId && ca.PublicTime <= Clock.Now).ToListAsync();
             var assignmentIds = classAssignments.Select(ca => ca.AssignmentId).ToList();

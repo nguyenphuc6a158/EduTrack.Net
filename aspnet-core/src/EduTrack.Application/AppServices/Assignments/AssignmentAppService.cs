@@ -138,10 +138,10 @@ namespace EduTrack.AppServices.Assignments
         }
         public async Task<PagedResultDto<AssignmentDto>> GetAllAssignmentForStudentAsync(long userId, long chapterId, PagedAssignmentResultRequestDto input)
         {
-            var studentClass = await _studentClassRepository.FirstOrDefaultAsync(x => x.StudentId == userId && x.ClassId == chapterId);
+            var studentClass = await _studentClassRepository.FirstOrDefaultAsync(x => x.StudentId == userId);
             if (studentClass == null)
             {
-                throw new UserFriendlyException("Sinh viên không thuộc lớp này");
+                throw new UserFriendlyException("Sinh viên không thuộc lớp nao");
             }
             var classId = studentClass.ClassId;
             var classAssignments = await _classAssignmentRepository.GetAll().Where(ca => ca.ClassId == classId && ca.PublicTime <= Clock.Now).ToListAsync();

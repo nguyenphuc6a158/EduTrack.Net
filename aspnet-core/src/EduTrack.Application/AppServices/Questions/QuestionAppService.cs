@@ -98,6 +98,24 @@ namespace EduTrack.AppServices.Questions
             }).ToList();
             return new PagedResultDto<QuestionDto>(totalCount, result);
         }
+        public async Task<QuestionDto> GetQuestionByAssignmentIdAndOrderIndex(long assignmentId, int orderIndex)
+        {
+            var assignmentQuestion = await AsyncQueryableExecuter.FirstOrDefaultAsync(
+                _assignmentQuestionRepository.GetAll()
+                    .Where(aq => aq.AssignmentId == assignmentId && aq.OrderIndex == orderIndex)
+            );
+            if (assignmentQuestion == null)
+            {
+                throw new UserFriendlyException("Không tìm thấy câu hỏi");
+            }
+            var question = await Repository.FirstOrDefaultAsync(q => q.Id == assignmentQuestion.QuestionId);
+            if (question == null)
+            {
+                throw new UserFriendlyException("Không tìm thấy dữ liệu câu hỏi");
+            }
+
+            return ObjectMapper.Map<QuestionDto>(question);
+        }
         public async Task<PagedResultDto<QuestionDto>> GetQuestionByAssignmentAsync(long assignmentId)
         {
             var assignmentQuestionQuery = _assignmentQuestionRepository.GetAll().Where(aq => aq.AssignmentId == assignmentId);

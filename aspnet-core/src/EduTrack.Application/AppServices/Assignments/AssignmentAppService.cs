@@ -14,6 +14,7 @@ using EduTrack.Entities.Assignments;
 using EduTrack.Entities.Chapters;
 using EduTrack.Entities.ClassAssignments;
 using EduTrack.Entities.StudenClasses;
+using EduTrack.Entities.StudentAssignments;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,7 @@ namespace EduTrack.AppServices.Assignments
         private readonly IRepository<User, long> _userRepository;
         private readonly IRepository<ClassAssignment, long> _classAssignmentRepository;
         private readonly IRepository<StudentClass, long> _studentClassRepository;
+        private readonly IRepository<StudentAssignment, long> _studentAssignmentRepository;
 
         public AssignmentAppService(
             IRepository<Assignment, long> repository,
@@ -40,7 +42,8 @@ namespace EduTrack.AppServices.Assignments
             IRepository<User, long> userRepository,
             IRepository<Chapter, long> chapterRepository,
             IRepository<ClassAssignment, long> classAssignmentRepository,
-            IRepository<StudentClass, long> studentClassRepository
+            IRepository<StudentClass, long> studentClassRepository,
+            IRepository<StudentAssignment, long> studentAssignmetRepository
 
         ) : base(repository)
         {
@@ -49,6 +52,8 @@ namespace EduTrack.AppServices.Assignments
             _assignmentQuestionRepository = assignmentQuestionRepository;
             _userRepository = userRepository;
             _chapterRepository = chapterRepository;
+            _studentAssignmentRepository = studentAssignmetRepository;
+
             GetPermissionName = PermissionNames.Pages_Assignments;
             GetAllPermissionName = PermissionNames.Pages_Assignments;
 
@@ -136,22 +141,22 @@ namespace EduTrack.AppServices.Assignments
             }).ToList();
             return new PagedResultDto<AssignmentDto>(totalCount, result);
         }
-        public async Task<PagedResultDto<AssignmentDto>> GetAllAssignmentForStudentAsync(long userId, long chapterId, PagedAssignmentResultRequestDto input)
+        public async Task<PagedResultDto<DetailAssignmentForStudentDto>> GetAllAssignmentForStudentAsync(long userId, long chapterId, PagedAssignmentResultRequestDto input)
         {
             var studentClass = await _studentClassRepository.FirstOrDefaultAsync(x => x.StudentId == userId);
             if (studentClass == null)
             {
-                throw new UserFriendlyException("Sinh viên không thuộc lớp nao");
+                throw new UserFriendlyException("Sinh viên không thuộc lớp nào");
             }
             var classId = studentClass.ClassId;
             var classAssignments = await _classAssignmentRepository.GetAll().Where(ca => ca.ClassId == classId && ca.PublicTime <= Clock.Now).ToListAsync();
             var assignmentIds = classAssignments.Select(ca => ca.AssignmentId).ToList();
-            var query = Repository.GetAll().Where(a => assignmentIds.Contains(a.Id));
+            var query = Repository.GetAll().Where(a => assignmentIds.Contains(a.Id) && a.ChapterId == chapterId);
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
             var assignments = await AsyncQueryableExecuter.ToListAsync(
                 ApplyPaging(query, input)
             );
-
+            var studentAssignments = await _studentAssignmentRepository.GetAll().Where(sa => sa.StudentId == userId).ToListAsync();
             var chapterIds = assignments.Select(a => a.ChapterId).Distinct().ToList();
             var chapters = await _chapterRepository.GetAll().Where(c => chapterIds.Contains(c.Id)).ToListAsync();
             var userIds = assignments.Select(x => x.CreatorUserId).Distinct().ToList();
@@ -161,17 +166,19 @@ namespace EduTrack.AppServices.Assignments
             {
                 var chapter = chapters.FirstOrDefault(c => c.Id == a.ChapterId);
                 var user = users.FirstOrDefault(u => u.Id == a.CreatorUserId);
-                return new AssignmentDto
+                var studentAssignment = studentAssignments.FirstOrDefault(sa => sa.AssignmentId == a.Id);
+                return new DetailAssignmentForStudentDto
                 {
                     Id = a.Id,
                     ChapterId = a.ChapterId,
                     Title = a.Title,
                     ChapterName = chapter?.ChapterName,
-                    CreateBy = user?.FullName
+                    CreateBy = user?.FullName,
+                    Active = studentAssignment?.Status ?? -1
                 };
             }).ToList();
 
-            return new PagedResultDto<AssignmentDto>(totalCount, result);
+            return new PagedResultDto<DetailAssignmentForStudentDto>(totalCount, result);
         }
     }
 }

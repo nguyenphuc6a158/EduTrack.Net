@@ -15,6 +15,7 @@ namespace EduTrack.AppServices.Assignments.Dtos
         public AssignmentMapProfile()
         {
             CreateMap<Assignment, AssignmentDto>();
+            CreateMap<Assignment, DetailAssignmentForStudentDto>();
             CreateMap<CreateAssignmentDto, Assignment>();
             CreateMap<CreateAssignmentWithQuestionsDto, Assignment>();
             CreateMap<UpdateAssignmentWithQuestionsDto, Assignment>();

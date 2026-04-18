@@ -12,6 +12,7 @@ namespace EduTrack.Entities.Questions
     {
         [Required]
         public virtual string FileUrl { get; set; }
+
         [Required]
         public virtual long ChapterId { get; set; }
         [Required]

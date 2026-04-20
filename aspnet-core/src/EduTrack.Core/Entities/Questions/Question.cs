@@ -8,11 +8,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EduTrack.Entities.Questions
 {
-    public class Question : AuditedEntity<long>
+    public class Question : FullAuditedEntity<long>
     {
         [Required]
-        public virtual string FileUrl { get; set; }
-
+        public virtual string FileUrlAssignment { get; set; }
+        public virtual string FileUrlExplain { get; set; }
         [Required]
         public virtual long ChapterId { get; set; }
         [Required]

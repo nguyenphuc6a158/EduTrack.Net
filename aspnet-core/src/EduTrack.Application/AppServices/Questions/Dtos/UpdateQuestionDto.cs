@@ -13,7 +13,8 @@ namespace EduTrack.AppServices.Questions.Dtos
         [Required]
         public long Id { get; set; }
         [Required]
-        public string FileUrl { get; set; }
+        public string fileUrlAssignment { get; set; }
+        public string FileUrlExplain { get; set; }
         public long ChapterId { get; set; }
         public int DifficultyLevel { get; set; }
     }

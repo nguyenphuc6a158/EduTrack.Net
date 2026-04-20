@@ -2,6 +2,7 @@
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
+using Abp.EntityFrameworkCore.Repositories;
 using Abp.UI;
 using Castle.MicroKernel.Registration;
 using EduTrack.AppServices.Classes.Dtos;
@@ -16,6 +17,8 @@ using EduTrack.Entities.Questions;
 using EduTrack.Entity.Classes;
 using EduTrack.Entity.Grades;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +71,8 @@ namespace EduTrack.AppServices.Questions
                 return new QuestionDto
                 {
                     Id = q.Id,
-                    FileUrl = q.FileUrl,
+                    FileUrlAssignment = q.FileUrlAssignment,
+                    FileUrlExplain = q.FileUrlExplain,
                     ChapterId = q.ChapterId,
                     ChapterName = chapter.ChapterName,
                     DifficultyLevel = q.DifficultyLevel
@@ -90,7 +94,8 @@ namespace EduTrack.AppServices.Questions
                 return new QuestionDto
                 {
                     Id = q.Id,
-                    FileUrl = q.FileUrl,
+                    FileUrlAssignment = q.FileUrlAssignment,
+                    FileUrlExplain = q.FileUrlExplain,
                     ChapterId = q.ChapterId,
                     ChapterName = chapter.ChapterName,
                     DifficultyLevel = q.DifficultyLevel
@@ -132,7 +137,8 @@ namespace EduTrack.AppServices.Questions
                 return new QuestionDto
                 {
                     Id = q.Id,
-                    FileUrl = q.FileUrl,
+                    FileUrlAssignment = q.FileUrlAssignment,
+                    FileUrlExplain = q.FileUrlExplain,
                     ChapterId = q.ChapterId,
                     ChapterName = chapter.ChapterName,
                     DifficultyLevel = q.DifficultyLevel
@@ -156,7 +162,7 @@ namespace EduTrack.AppServices.Questions
 
             await Repository.InsertAsync(question);
             await CurrentUnitOfWork.SaveChangesAsync();
-
+            var listOptions = new List <QuestionOption>();
             foreach (var answer in input.Answers)
             {
                 var option = new QuestionOption
@@ -165,9 +171,15 @@ namespace EduTrack.AppServices.Questions
                     Content = answer.Content,
                     IsCorrect = answer.IsCorrect
                 };
-
-                await _questionOptionRepository.InsertAsync(option);
+                listOptions.Add(option);
             }
+
+            await _questionOptionRepository.InsertRangeAsync(listOptions);
+            await CurrentUnitOfWork.SaveChangesAsync();
+        }
+        public override async Task DeleteAsync(EntityDto<long> input)
+        {
+            await Repository.DeleteAsync(input.Id);
         }
         public async Task UpdateWithOptionsAsync(UpdateQuestionWithOptionsDto input)
         {
@@ -191,7 +203,8 @@ namespace EduTrack.AppServices.Questions
             }
 
             // 2. Update question
-            question.FileUrl = input.FileUrl;
+            question.FileUrlAssignment = input.FileUrlAssignment;
+            question.FileUrlExplain = input.FileUrlExplain;
             question.ChapterId = input.ChapterId;
             question.DifficultyLevel = input.DifficultyLevel;
 

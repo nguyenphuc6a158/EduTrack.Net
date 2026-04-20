@@ -96,5 +96,12 @@ public class EduTrackDbContext : AbpZeroDbContext<Tenant, Role, User, EduTrackDb
                 .HasForeignKey(ca => ca.SelectedOptionId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+        modelBuilder.Entity<QuestionOption>(entity =>
+        {
+            entity.HasOne(a => a.Question)
+            .WithMany(q => q.QuestionOptions)
+            .HasForeignKey(a => a.QuestionId)
+            .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }

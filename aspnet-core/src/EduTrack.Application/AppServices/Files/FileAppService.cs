@@ -45,12 +45,12 @@ public class FileAppService : ApplicationService, IFileAppService
             throw new UserFriendlyException("File không hợp lệ");
         }
 
-        var allowedExtensions = new[] { ".docx" };
+        var allowedExtensions = new[] { ".pdf" };
         var ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
 
         if (!allowedExtensions.Contains(ext))
         {
-            throw new UserFriendlyException("Chỉ cho phép file PDF hoặc ảnh");
+            throw new UserFriendlyException("Chỉ cho phép file PDF");
         }
 
         var folder = Path.Combine(_env.WebRootPath, "uploads");

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 public class CreateQuestionWithOptionsDto
 {
-    public string FileUrl { get; set; }
+    public string FileUrlAssignment { get; set; }
+    public string FileUrlExplain { get; set; }
     public long ChapterId { get; set; }
     public int DifficultyLevel { get; set; }
 

@@ -11,7 +11,8 @@ namespace EduTrack.AppServices.Questions.Dtos
     public class UpdateQuestionWithOptionsDto : IEntityDto<long>
     {
         public long Id { get; set; }
-        public string FileUrl { get; set; }
+        public string FileUrlAssignment { get; set; }
+        public string FileUrlExplain { get; set; }
         public long ChapterId { get; set; }
         public int DifficultyLevel { get; set; }
 

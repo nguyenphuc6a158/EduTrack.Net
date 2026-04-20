@@ -8,7 +8,8 @@ namespace EduTrack.AppServices.Questions.Dtos
 {
     public class CreateQuestionDto
     {
-        public string FileUrl { get; set; }
+        public string FileUrlAssignment { get; set; }
+        public string FileUrlExplain { get; set; }
         public long ChapterId { get; set; }
         public int DifficultyLevel { get; set; }
     }

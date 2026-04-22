@@ -174,7 +174,7 @@ namespace EduTrack.AppServices.Assignments
                     Title = a.Title,
                     ChapterName = chapter?.ChapterName,
                     CreateBy = user?.FullName,
-                    Active = studentAssignment?.Status ?? -1
+                    Active = studentAssignment?.Status ?? 0
                 };
             }).ToList();
 

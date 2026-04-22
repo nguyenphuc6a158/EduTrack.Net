@@ -2,6 +2,7 @@
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Timing;
+using Abp.UI;
 using EduTrack.AppServices.ClassAssignments.Dtos;
 using EduTrack.AppServices.Questions;
 using EduTrack.AppServices.Questions.Dtos;
@@ -27,10 +28,31 @@ namespace EduTrack.AppServices.StudentAssignments
         public StudentAssignmentAppService(
             IRepository<StudentAssignment, long> repository,
             IRepository<StudentClass, long> studentClassRepository,
-            IRepository<ClassAssignment, long> classAssignmentRepository    
+            IRepository<ClassAssignment, long> classAssignmentRepository
         ) : base(repository)
         {
             _studentClassRepository = studentClassRepository;
         }
+        public async override Task<StudentAssignmentDto> CreateAsync(CreateStudentAssignmentDto input)
+        {
+            if (await CheckExist(input.StudentId, input.AssignmentId))
+            {
+                throw new UserFriendlyException("A student assignment for this student and assignment already exists.");
+            }
+
+            if (input.SubmittedAt == default)
+            {
+                input.SubmittedAt = Clock.Now;
+            }
+
+            return await base.CreateAsync(input);
+        }
+        public async Task<bool> CheckExist(long studentId, long assignmentId) 
+        {
+            var query = Repository.GetAll().Where(x => x.StudentId == studentId && x.AssignmentId == assignmentId);
+            var existed = await AsyncQueryableExecuter.AnyAsync(query);
+            return existed;
+        }
     }
+    
 }

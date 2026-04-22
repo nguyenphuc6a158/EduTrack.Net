@@ -183,15 +183,12 @@ namespace EduTrack.AppServices.Questions
         }
         public async Task UpdateWithOptionsAsync(UpdateQuestionWithOptionsDto input)
         {
-            // 1. Lấy question
             var question = await Repository.GetAsync(input.Id);
 
             if (question == null)
             {
                 throw new UserFriendlyException("Không tìm thấy câu hỏi");
             }
-
-            // Validate input answers before performing any changes
             if (input.Answers == null || !input.Answers.Any())
             {
                 throw new UserFriendlyException("Câu hỏi phải có đáp án");
@@ -201,22 +198,16 @@ namespace EduTrack.AppServices.Questions
             {
                 throw new UserFriendlyException("Phải có ít nhất 1 đáp án đúng");
             }
-
-            // 2. Update question
             question.FileUrlAssignment = input.FileUrlAssignment;
             question.FileUrlExplain = input.FileUrlExplain;
             question.ChapterId = input.ChapterId;
             question.DifficultyLevel = input.DifficultyLevel;
 
             await Repository.UpdateAsync(question);
-
-            // 3. Lấy danh sách option hiện tại
             var existingOptions = await _questionOptionRepository
                 .GetAll()
                 .Where(x => x.QuestionId == input.Id)
                 .ToListAsync();
-
-            // 4. Xoá option cũ không còn trong input
             var inputIds = input.Answers
                 .Where(x => x.Id.HasValue)
                 .Select(x => x.Id.Value)
@@ -231,12 +222,10 @@ namespace EduTrack.AppServices.Questions
                 await _questionOptionRepository.DeleteAsync(item);
             }
 
-            // 5. Update hoặc thêm mới
             foreach (var answer in input.Answers)
             {
                 if (answer.Id.HasValue)
                 {
-                    // update if exists, otherwise create new
                     var existing = existingOptions.FirstOrDefault(x => x.Id == answer.Id.Value);
                     if (existing != null)
                     {
@@ -259,7 +248,6 @@ namespace EduTrack.AppServices.Questions
                 }
                 else
                 {
-                    // thêm mới
                     var newOption = new QuestionOption
                     {
                         QuestionId = question.Id,
@@ -270,7 +258,6 @@ namespace EduTrack.AppServices.Questions
                     await _questionOptionRepository.InsertAsync(newOption);
                 }
             }
-            // Persist changes
             await CurrentUnitOfWork.SaveChangesAsync();
         }
     }

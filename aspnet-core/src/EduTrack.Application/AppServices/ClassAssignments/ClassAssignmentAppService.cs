@@ -52,22 +52,36 @@ namespace EduTrack.AppServices.ClassAssignments
         }
         public async Task<List<ClassAssignmentDto>> CreateListClassAssignmentAsync(CreateListClassAssgnmentDto input)
         {
-            var request = new List<ClassAssignment>();
-
-            foreach (var classDto in input.ListClasses)
+            if (input == null || input.ListClasses == null || !input.ListClasses.Any())
             {
-                request.Add(new ClassAssignment
+                return new List<ClassAssignmentDto>();
+            }
+            // Loại class trùng từ request đầu vào
+            var classIds = input.ListClasses
+                .Select(x => x.Id)
+                .Distinct()
+                .ToList();
+            // Lấy các bản ghi đã có để tránh insert trùng (AssignmentId + ClassId)
+            var existedClassIds = await Repository.GetAll()
+                .Where(x => x.AssignmentId == input.AssignmentId && classIds.Contains(x.ClassId))
+                .Select(x => x.ClassId)
+                .ToListAsync();
+            var newEntities = classIds
+                .Where(classId => !existedClassIds.Contains(classId))
+                .Select(classId => new ClassAssignment
                 {
                     AssignmentId = input.AssignmentId,
-                    ClassId = classDto.Id,
+                    ClassId = classId,
                     PublicTime = input.PublicTime
-                });
+                })
+                .ToList();
+            if (newEntities.Count == 0)
+            {
+                return new List<ClassAssignmentDto>();
             }
-
-            await Repository.InsertRangeAsync(request);
+            await Repository.InsertRangeAsync(newEntities);
             await CurrentUnitOfWork.SaveChangesAsync();
-
-            return ObjectMapper.Map<List<ClassAssignmentDto>>(request);
+            return ObjectMapper.Map<List<ClassAssignmentDto>>(newEntities);
         }
         public async Task<PagedResultDto<ClassAssignmentDto>> GetAllClassAssignmentByCreaterUserIdAsync(long createrUserId)
         {

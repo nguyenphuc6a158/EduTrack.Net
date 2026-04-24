@@ -168,6 +168,8 @@ namespace EduTrack.AppServices.Assignments
                 var chapter = chapters.FirstOrDefault(c => c.Id == a.ChapterId);
                 var user = users.FirstOrDefault(u => u.Id == a.CreatorUserId);
                 var studentAssignment = studentAssignments.FirstOrDefault(sa => sa.AssignmentId == a.Id);
+                var classAssignment = classAssignments.FirstOrDefault(ca => ca.AssignmentId == a.Id);
+
                 return new DetailAssignmentForStudentDto
                 {
                     Id = a.Id,
@@ -175,7 +177,8 @@ namespace EduTrack.AppServices.Assignments
                     Title = a.Title,
                     ChapterName = chapter?.ChapterName,
                     CreateBy = user?.FullName,
-                    Active = studentAssignment?.Status ?? 0
+                    Active = studentAssignment?.Status ?? 0,
+                    PublicTime = classAssignment?.PublicTime ?? default 
                 };
             }).ToList();
 

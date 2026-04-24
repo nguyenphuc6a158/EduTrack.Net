@@ -8,7 +8,7 @@ namespace EduTrack.AppServices.StudentAnswers.Dtos
 {
     public class CreateStudentAnswerDto
     {
-        public long StudentAssignmentIdƠ { get; set; }
+        public long StudentAssignmentId { get; set; }
         public long QuestionId { get; set; }
         public long SelectedOptionId { get; set; }
         public bool IsCorrect { get; set; }

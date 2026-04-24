@@ -64,23 +64,24 @@ namespace EduTrack.AppServices.Assignments
         public async Task CreateAssignmentWithQuestionsAsync(CreateAssignmentWithQuestionsDto input)
         {
             var assignment = ObjectMapper.Map<Assignment>(input);
+            //assignment.AssignmentQuestions = null;
 
             await Repository.InsertAsync(assignment);
             await CurrentUnitOfWork.SaveChangesAsync();
 
-            var assignmentQuestions = input.assignmentQuestions.Select(q => new AssignmentQuestion
-            {
-                QuestionId = q.QuestionId,
-                AssignmentId = assignment.Id,
-                OrderIndex = q.OrderIndex,
-            }).ToList();
+            //var assignmentQuestions = input.assignmentQuestions.Select(q => new AssignmentQuestion
+            //{
+            //    QuestionId = q.QuestionId,
+            //    AssignmentId = assignment.Id,
+            //    OrderIndex = q.OrderIndex,
+            //}).ToList();
 
-            foreach (var item in assignmentQuestions)
-            {
-               await _assignmentQuestionRepository.InsertAsync(item);
-            }
+            //foreach (var item in assignmentQuestions)
+            //{
+            //    await _assignmentQuestionRepository.InsertAsync(item);
+            //}
 
-            await CurrentUnitOfWork.SaveChangesAsync();
+            //await CurrentUnitOfWork.SaveChangesAsync();
         }
         public async Task UpdateAssignmentWithQuestionsAsync(UpdateAssignmentWithQuestionsDto input)
         {

@@ -25,12 +25,12 @@ namespace EduTrack.AppServices.Chapters
         public ChapterAppService(IRepository<Chapter, long> repository)
             : base(repository)
         {
-            GetPermissionName = PermissionNames.Pages_Chapters;
-            GetAllPermissionName = PermissionNames.Pages_Chapters;
+            //GetPermissionName = PermissionNames.Pages_Chapters;
+            ////GetAllPermissionName = PermissionNames.Pages_Chapters;
 
-            CreatePermissionName = PermissionNames.Pages_Chapters_Create;
-            UpdatePermissionName = PermissionNames.Pages_Chapters_Update;
-            DeletePermissionName = PermissionNames.Pages_Chapters_Delete;
+            //CreatePermissionName = PermissionNames.Pages_Chapters_Create;
+            //UpdatePermissionName = PermissionNames.Pages_Chapters_Update;
+            //DeletePermissionName = PermissionNames.Pages_Chapters_Delete;
         }
         public async Task<ListResultDto<ChapterDto>> GetChapterBySubjectAsync(long subjectId)
         {

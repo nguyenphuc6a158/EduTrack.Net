@@ -15,8 +15,8 @@ namespace EduTrack.AppServices.StudentAnswers.Dtos
         public StudentAnswerMapProfile()
         {
             CreateMap<StudentAnswer, StudentAnswerDto>();
-            CreateMap<CreateStudentAnswerDto, StudentAnswer>();
-            CreateMap<UpdateStudentAnswerDto, StudentAnswer>();
+            CreateMap<CreateStudentAnswerInput, StudentAnswer>();
+            CreateMap<UpdateStudentAnswerInput, StudentAnswer>();
         }
     }
 }

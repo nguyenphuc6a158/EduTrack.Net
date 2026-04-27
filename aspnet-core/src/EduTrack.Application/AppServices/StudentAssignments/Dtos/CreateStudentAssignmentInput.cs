@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.AppServices.StudentAssignments.Dtos
 {
-    public class CreateStudentAssignmentDto
+    public class CreateStudentAssignmentInput
     {
         public long StudentId { get; set; }
         public long AssignmentId { get; set; }

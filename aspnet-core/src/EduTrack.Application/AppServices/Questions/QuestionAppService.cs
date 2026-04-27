@@ -121,7 +121,7 @@ namespace EduTrack.AppServices.Questions
 
             return ObjectMapper.Map<QuestionDto>(question);
         }
-        public async Task<PagedResultDto<QuestionDto>> GetQuestionByAssignmentAsync(long assignmentId)
+        public async Task<PagedResultDto<QuestionDto>> GetAllQuestionByAssignmentAsync(long assignmentId)
         {
             var assignmentQuestionQuery = _assignmentQuestionRepository.GetAll().Where(aq => aq.AssignmentId == assignmentId);
             var totalCount = await AsyncQueryableExecuter.CountAsync(assignmentQuestionQuery);

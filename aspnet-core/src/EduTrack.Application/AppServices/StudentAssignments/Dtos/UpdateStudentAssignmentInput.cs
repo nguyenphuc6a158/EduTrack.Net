@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.AppServices.StudentAssignments.Dtos
 {
-    public class UpdateStudentAssignmentDto : IEntityDto<long>
+    public class UpdateStudentAssignmentInput : IEntityDto<long>
     {
         [Required]
         public long Id { get; set; }

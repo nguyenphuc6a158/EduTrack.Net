@@ -15,7 +15,7 @@ namespace EduTrack.AppServices.StudentAssignments
         StudentAssignmentDto,
         long,
         PagedStudentAssignmentResultRequestDto,
-        CreateStudentAssignmentDto, UpdateStudentAssignmentDto>
+        CreateStudentAssignmentInput, UpdateStudentAssignmentInput>
     {
     }
 }

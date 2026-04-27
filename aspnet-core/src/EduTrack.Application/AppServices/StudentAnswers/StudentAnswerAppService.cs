@@ -1,4 +1,5 @@
 ﻿using Abp.Application.Services;
+using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
 using EduTrack.AppServices.Questions;
 using EduTrack.AppServices.Questions.Dtos;
@@ -14,20 +15,23 @@ using System.Threading.Tasks;
 namespace EduTrack.AppServices.StudentAnswers
 {
     public class StudentAnswerAppService
-    : AsyncCrudAppService<StudentAnswer, StudentAnswerDto, long, PagedStudentAnswerResultRequestDto, CreateStudentAnswerDto, UpdateStudentAnswerDto>,
+    : AsyncCrudAppService<StudentAnswer, StudentAnswerDto, long, PagedStudentAnswerResultRequestDto, CreateStudentAnswerInput, UpdateStudentAnswerInput>,
       IStudentAnswerAppService
     {
         public StudentAnswerAppService(IRepository<StudentAnswer, long> repository)
             : base(repository)
         {
         }
-        public async override Task<StudentAnswerDto> CreateAsync(CreateStudentAnswerDto input)
+        public async override Task<StudentAnswerDto> CreateAsync(CreateStudentAnswerInput input)
         {
-            var existed = await CheckExist(input);
+            var existed = Repository.GetAll().Any(sa =>
+                sa.StudentAssignmentId == input.StudentAssignmentId &&
+                sa.QuestionId == input.QuestionId &&
+                sa.SelectedOptionId == input.SelectedOptionId);
 
             if (existed)
             {
-                throw new Exception("Student đã trả lời câu hỏi này rồi");
+                return null;
             }
 
             var entity = ObjectMapper.Map<StudentAnswer>(input);
@@ -37,13 +41,17 @@ namespace EduTrack.AppServices.StudentAnswers
 
             return ObjectMapper.Map<StudentAnswerDto>(entity);
         }
-        public async Task<bool> CheckExist(CreateStudentAnswerDto input)
+        public async Task<StudentAnswerDto> CheckExist(CreateStudentAnswerInput input)
         {
-            var exists = Repository.GetAll().Any(sa =>
+            var entity = Repository.GetAll().FirstOrDefault(sa =>
                 sa.StudentAssignmentId == input.StudentAssignmentId &&
                 sa.QuestionId == input.QuestionId &&
                 sa.SelectedOptionId == input.SelectedOptionId);
-            return exists;
+            if (entity == null)
+            {
+                return null;
+            }
+            return ObjectMapper.Map<StudentAnswerDto>(entity); 
         }
     }
 }

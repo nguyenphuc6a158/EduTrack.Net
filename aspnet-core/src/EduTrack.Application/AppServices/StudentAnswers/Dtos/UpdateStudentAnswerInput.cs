@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Abp.Application.Services.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace EduTrack.AppServices.StudentAnswers.Dtos
 {
-    public class CreateStudentAnswerDto
+    public class UpdateStudentAnswerInput : IEntityDto<long>
     {
+        public long Id { get; set; }
         public long StudentAssignmentId { get; set; }
         public long QuestionId { get; set; }
         public long SelectedOptionId { get; set; }

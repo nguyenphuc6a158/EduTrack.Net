@@ -14,8 +14,8 @@ namespace EduTrack.AppServices.StudentAnswers
         StudentAnswerDto,
         long,
         PagedStudentAnswerResultRequestDto,
-        CreateStudentAnswerDto,
-        UpdateStudentAnswerDto>
+        CreateStudentAnswerInput,
+        UpdateStudentAnswerInput>
     {
     }
 }

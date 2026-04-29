@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace EduTrack.AppServices.StudentAssignments
 {
@@ -99,6 +100,41 @@ namespace EduTrack.AppServices.StudentAssignments
             await Repository.UpdateAsync(entity);
 
             return ObjectMapper.Map<StudentAssignmentDto>(entity);
+        }
+        public async Task<DatailDoHomeWorkDto> GetDetailDoHomeWorkDto(long userId)
+        {
+            var data = await Repository.GetAll()
+                .Where(x => x.StudentId == userId)
+                .Select(x => new
+                {
+                    x.Status,
+                    x.Score
+                })
+                .ToListAsync();
+
+            if (!data.Any())
+            {
+                return null;
+            }
+
+            var total = data.Count;
+
+            var totalCompleted = data.Count(x => x.Status == (int)Status.COMPLATED);
+            var totalNotStarted = data.Count(x => x.Status == (int)Status.NOTSTARTED);
+            var totalInProgress = total - totalCompleted - totalNotStarted;
+
+            var avgScore = data.Select(x => x.Score).DefaultIfEmpty(0).Average();
+
+            return new DatailDoHomeWorkDto
+            {
+                Series = new List<int>
+                {
+                    totalCompleted,
+                    totalInProgress,
+                    totalNotStarted
+                },
+                AvgScore = avgScore
+            };
         }
     }
 }

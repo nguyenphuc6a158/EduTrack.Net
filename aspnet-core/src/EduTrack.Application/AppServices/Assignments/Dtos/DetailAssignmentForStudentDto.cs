@@ -17,5 +17,6 @@ namespace EduTrack.AppServices.Assignments.Dtos
         public string CreateBy { get; set; }
         public Chapter Chapters { get; set; }
         public DateTime PublicTime { get; set; }
+        public float Score { get; set; }
     }
 }

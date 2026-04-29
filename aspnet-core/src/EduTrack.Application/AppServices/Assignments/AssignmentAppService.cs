@@ -178,7 +178,8 @@ namespace EduTrack.AppServices.Assignments
                     ChapterName = chapter?.ChapterName,
                     CreateBy = user?.FullName,
                     Active = studentAssignment?.Status ?? 0,
-                    PublicTime = classAssignment?.PublicTime ?? default 
+                    PublicTime = classAssignment?.PublicTime ?? default,
+                    Score = studentAssignment.Score
                 };
             }).ToList();
 

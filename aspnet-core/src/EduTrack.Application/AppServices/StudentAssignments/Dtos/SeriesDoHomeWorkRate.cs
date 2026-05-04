@@ -10,5 +10,9 @@ namespace EduTrack.AppServices.StudentAssignments.Dtos
     {
         public List<int> Series { get; set; }
         public float AvgScore { get; set; }
+        public float AvgScoreImprovement { get; set; }
+        public float AvgScoreCurrentMonth { get; set; }
+        public float CompletedCurrentMonthRate { get; set; }
+        public float CompletedPreviousMonthRate { get; set; }
     }
 }

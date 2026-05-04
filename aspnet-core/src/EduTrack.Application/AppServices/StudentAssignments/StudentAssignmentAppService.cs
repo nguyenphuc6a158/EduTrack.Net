@@ -21,6 +21,7 @@ using EduTrack.Enum;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,14 +35,17 @@ namespace EduTrack.AppServices.StudentAssignments
     {
         private readonly IRepository<StudentClass, long> _studentClassRepository;
         private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<ClassAssignment, long> _classAssignmentsRepository;
         public StudentAssignmentAppService(
             IRepository<StudentAssignment, long> repository,
             IRepository<StudentClass, long> studentClassRepository,
-            IRepository<User, long> userRepository
+            IRepository<User, long> userRepository,
+            IRepository<ClassAssignment, long> classAssignmentsRepository
         ) : base(repository)
         {
             _studentClassRepository = studentClassRepository;
             _userRepository = userRepository;
+            _classAssignmentsRepository = classAssignmentsRepository;
         }
         public async Task<StudentAssignmentDto> GetStudentAssignmentByStudentIDAndAssignmentId(long studentId, long assignmentId)
         {
@@ -103,21 +107,58 @@ namespace EduTrack.AppServices.StudentAssignments
         }
         public async Task<DatailDoHomeWorkDto> GetDetailDoHomeWorkDto(long userId)
         {
-            var data = await Repository.GetAll()
-                .Where(x => x.StudentId == userId)
-                .Select(x => new
-                {
-                    x.Status,
-                    x.Score
-                })
-                .ToListAsync();
-
+            var classId = _studentClassRepository.GetAll().Where(sc => sc.StudentId == userId)
+                .Select(sc => sc.ClassId)
+                .FirstOrDefault();
+            var query = from sa in Repository.GetAll()
+                       join ca in _classAssignmentsRepository.GetAll()
+                       on sa.AssignmentId equals ca.AssignmentId 
+                        where sa.StudentId == userId && ca.ClassId == classId
+                       select new
+                       {
+                           Status = sa.Status,
+                           Score = sa.Score,
+                           PublicTime = ca.PublicTime
+                       };
+            var data = await AsyncQueryableExecuter.ToListAsync(query);
             if (!data.Any())
             {
                 return null;
             }
+            var now = Clock.Now;
+            
+            var startCurrentMonth = new DateTime(now.Year, now.Month, 1);
+            var endCurrentMonth = startCurrentMonth.AddMonths(1).AddDays(-1);
 
+            var startPreviousMonth = startCurrentMonth.AddMonths(-1);
+            var endPreviousMonth = startCurrentMonth.AddDays(-1);
+
+            var avgScoreCurrentMonth = data.Where(x => x.PublicTime >= startCurrentMonth && x.PublicTime <= endCurrentMonth)
+                .Select(x => x.Score)
+                .DefaultIfEmpty(0)
+                .Average();
+            var avgScorePreviousMonth = data.Where(x => x.PublicTime >= startPreviousMonth && x.PublicTime <= endPreviousMonth)
+                .Select(x => x.Score)
+                .DefaultIfEmpty(0)
+                .Average();
             var total = data.Count;
+            var statusesCurrentMonth = data
+                .Where(x => x.PublicTime >= startCurrentMonth &&
+                            x.PublicTime < endCurrentMonth)
+                .Select(x => x.Status);
+            
+
+            var totalCompletedCurrentMonth = statusesCurrentMonth
+                .Count(status => status == (int)Status.COMPLATED);
+            var totalCurrentMonth = statusesCurrentMonth.Count();
+
+            var statusesPreviousMonth = data
+                .Where(x => x.PublicTime >= startPreviousMonth &&
+                            x.PublicTime < endPreviousMonth)
+                .Select(x => x.Status);
+            var totalCompletedPreviousMonth = statusesPreviousMonth
+                .Count(status => status == (int)Status.COMPLATED);
+            var totalPreviousMonth = statusesPreviousMonth.Count();
 
             var totalCompleted = data.Count(x => x.Status == (int)Status.COMPLATED);
             var totalNotStarted = data.Count(x => x.Status == (int)Status.NOTSTARTED);
@@ -133,7 +174,11 @@ namespace EduTrack.AppServices.StudentAssignments
                     totalInProgress,
                     totalNotStarted
                 },
-                AvgScore = avgScore
+                AvgScore = avgScore,
+                AvgScoreImprovement = avgScoreCurrentMonth - avgScorePreviousMonth,
+                AvgScoreCurrentMonth = avgScoreCurrentMonth,
+                CompletedCurrentMonthRate = (totalCompletedCurrentMonth / totalCurrentMonth) * 100,
+                CompletedPreviousMonthRate = (totalCompletedPreviousMonth / totalPreviousMonth) * 100
             };
         }
     }
